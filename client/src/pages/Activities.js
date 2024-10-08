@@ -88,7 +88,7 @@ const Activities = () => {
     return (
         <div className="w-full h-full">
             <div className="flex flex-col lg:flex-row bg-[#016a70] h-[70vh]" style={{paddingLeft:"10%",paddingRight:"10%",paddingTop:"50px"}}>
-                <h1 className="text-[#FFFDF7] font-poppins w-full text-7xl font-bold mt-[150px]">Display Activities Done</h1>
+                <h1 className="text-[#FFFDF7] font-poppins w-full text-7xl font-bold mt-[150px] text-left">Display Activities Done</h1>
             </div>
             <div className="flex justify-between items-center mb-4">
             <div className="flex justify-start">
@@ -112,14 +112,14 @@ const Activities = () => {
             </div>
             </div>
             <div className="pl-10 lg:ml-20 pr-10 pb-10 w-[90%] overflow-x-auto lg:overflow-visible">
-            <table class="table-auto text-left bg-white rounded-3xl font-poppins lg:mt-[-200px] ml-auto mr-auto shadow-2xl">
+            <table class="table-auto text-left bg-white rounded-3xl font-poppins lg:mt-[-250px] ml-auto mr-auto shadow-2xl">
                 <thead>
                     <tr>
-                        <th className="p-4 text-[#016a70] font-bold text-base text-center">S/N</th>
-                        <th className="p-4 text-[#016a70] font-bold text-base text-center">ACTIVITY TYPE</th>
-                        <th className="p-4 text-[#016a70] font-bold text-base text-center">CONTENT</th>
-                        <th className="p-4 text-[#016a70] font-bold text-base text-center">DATE & TIME</th>
-                        <th className="p-4 text-[#016a70] font-bold text-base text-center">REMARKS</th>
+                        <th className="p-4 text-[#016a70] font-bold text-base text-center border-b border-r border-[#937070]">S/N</th>
+                        <th className="p-4 text-[#016a70] font-bold text-base text-center border-b border-r border-[#937070]">ACTIVITY TYPE</th>
+                        <th className="p-4 text-[#016a70] font-bold text-base text-center border-b border-r border-[#937070]">CONTENT</th>
+                        <th className="p-4 text-[#016a70] font-bold text-base text-center border-b border-r border-[#937070]">DATE & TIME</th>
+                        <th className="p-4 text-[#016a70] font-bold text-base text-center border-b border-[#937070]">REMARKS</th>
                     </tr>
                 </thead>
                 
@@ -129,17 +129,17 @@ const Activities = () => {
                     <tbody>
                     {currentActivities.map((activity, index) => (
                         <tr key={index}>
-                            <td className="p-4 text-black font-semibold">{activity.serial_no}</td>
-                            <td className="p-4 text-black font-semibold">{activity.activity_type}</td>
-                            <td className="p-4 text-black font-semibold w-[40%]">{activity.content}
+                            <td className={"p-4 text-black font-semibold border-r border-[#937070] " + (index === currentActivities.length - 1 ? "border-b-0" : "border-b")}>{activity.serial_no}</td>
+                            <td className={"p-4 text-black font-semibold border-r border-[#937070] " + (index === currentActivities.length - 1 ? "border-b-0" : "border-b")}>{activity.activity_type}</td>
+                            <td className={"p-4 text-black font-semibold w-[40%] border-r border-[#937070] " + (index === currentActivities.length - 1 ? "border-b-0" : "border-b")}>{activity.content}
                                 <p className="font-light italic">
                                     {activity.activity_type === 'Reporting Collector' ? 
                                     <p>Reason: {activity.reason}</p> : activity.activity_type === 'Rating Collector' ? 
                                     <p>Rating: {activity.rating}/5<br />Comments: {activity.comments}</p>  : 'N/A'} 
                                 </p>
                             </td>
-                            <td className="p-4 text-black text-center">{activity.datetime}</td>
-                            <td className="p-4 text-black font-semibold text-center">
+                            <td className={"p-4 text-black text-center border-b border-r border-[#937070] " + (index === currentActivities.length - 1 ? "border-b-0" : "border-b")}>{activity.datetime}</td>
+                            <td className={"p-4 text-black font-semibold text-center border-[#937070] " + (index === currentActivities.length - 1 ? "border-b-0" : "border-b")}>
                                 <p className="font-light italic">
                                     {activity.remarks === 'Not Contacted' ? 
                                     <button className="rounded-lg bg-[#BE2D08] w-full text-white p-3 font-medium" disabled>{activity.remarks}</button> : activity.remarks === 'Contacted' ? 

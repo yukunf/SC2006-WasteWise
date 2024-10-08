@@ -457,7 +457,7 @@ const MyMap = ( {data} ) => {
                   selectedRegion={selectedRegion}
                   setSelectedRegion={setSelectedRegion}
                     />
-              <List filteredData={filteredData} />
+              {filteredData && filteredData.length > 0 ? <List filteredData={filteredData} /> : <h2 className="text-[#008660b2] font-semibold mt-[150px] text-4xl font-poppins">No waste collection services <br /> available in this area</h2>}
             </div>
         </div>
     );
