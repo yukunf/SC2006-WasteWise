@@ -18,3 +18,7 @@ class User(models.Model):
 
     def __str__(self):
         return self.username
+
+
+class CollectorUser(User):
+    collector_id = models.IntegerField(default=0)

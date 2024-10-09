@@ -8,14 +8,22 @@ This API provides basic CRUD operations for user resources, including creating, 
 - `password` (string): User's password
 - `role` (enum): User role, possible values are `general`, `collector`, `regulator`
 
+For CollectorUser, they have one more field
+- `collector_id`(integer): the collector ID corresponding to the ID of the entry in the collector info database
+
+As regulators doesn't have extra fields, they stay in the same database with general user.
 ## Base URL
 The base URL for all API endpoints is:
 
 ```
 https://<your-domain>/api/users/
+https://<your-domain>/api/collector-users/
 ```
 
 ## Endpoints
+
+When getting a collector user, they will have one more `collector_id` field, 
+others are all same, so only one example is given.
 
 ### Get User List
 - **URL**: `/api/users/`
@@ -30,6 +38,25 @@ https://<your-domain>/api/users/
       "email": "user1@example.com",
       "password": "hashed_password",
       "role": "general"
+    },
+    ...
+  ]
+  ```
+  
+### Get Collector User List
+- **URL**: `/api/collector-users/`
+- **Method**: GET
+- **Description**: Retrieve a list of all collector users.
+- **Response Example**:
+  ```json
+  [
+    {
+      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "username": "user1",
+      "email": "user1@example.com",
+      "password": "hashed_password",
+      "role": "general",
+      "collector_id": "0"
     },
     ...
   ]
