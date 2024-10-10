@@ -1,3 +1,5 @@
+# user/serializer.py
+
 from rest_framework import serializers
 from .models import User, CollectorUser
 
@@ -5,7 +7,7 @@ from .models import User, CollectorUser
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password', 'role']
+        fields = ['id', 'firstName', 'lastName', 'email', 'password', 'termsAgreed', 'role']
 
 
 class CollectorUserSerializer(serializers.ModelSerializer):
