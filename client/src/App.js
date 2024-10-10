@@ -17,6 +17,7 @@ import SearchByFilters_PublicUser from './pages/SearchByFilter_PublicUser';
 import AfterFilter_PublicUser from './pages/AfterFilter_PublicUser';
 import Display_PublicUser from './pages/Display_PublicUser';
 import Error404 from './pages/Error404';
+import Contact from './pages/Contact';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
             <Route path="/filter-public" element={<SearchByFilters_PublicUser />} />
             <Route path="/after-filter-public" element={<AfterFilter_PublicUser />} />
             <Route path="/display-info-public/:name" element={<Display_PublicUser />} />
+            <Route path="/contact" element={<Contact />} />
 
             {/* if user trying to access pages that doesn't exist! */}
             <Route path="*" element={<Error404 />} />
