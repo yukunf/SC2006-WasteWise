@@ -2,13 +2,13 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from server.user.models import GeneralUser
+from .models import GeneralUser
 
 
 class GeneralUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = GeneralUser
-        fields = GeneralUser.field_names + ['role']
+        fields = ['email', 'password', 'first_name', 'last_name', 'role']
 
 
 class RegisterGeneralUserSerializer(serializers.ModelSerializer):

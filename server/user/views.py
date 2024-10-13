@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate
 from rest_framework.decorators import action
 from rest_framework import viewsets
 
-from server.user.serializers import RegisterGeneralUserSerializer
+from .serializers import RegisterGeneralUserSerializer
 
 
 class GeneralUserViewSet(viewsets.ViewSet):

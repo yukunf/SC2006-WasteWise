@@ -38,14 +38,16 @@ const GeneralRegistration = () => {
             alert("You must agree to the terms and conditions");
             return;
         }
-    
+
+        const { termsAgreed, confirmPassword, ...newFormData } = formData;
+        // This is to get rid of unwanted data
         try {
             const response = await fetch('http://localhost:8000/api/users/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(newFormData),
             });
     
             if (response.ok) {
