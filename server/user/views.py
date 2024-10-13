@@ -2,62 +2,38 @@
 
 from django.shortcuts import render
 
-# Create your views here.
-from rest_framework import viewsets
-from .models import *
-from .serializers import UserSerializer
-
-from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth import authenticate, login
-from rest_framework.authtoken.models import Token  
+from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from rest_framework.decorators import action
+from rest_framework import viewsets
 
 
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-    def create(self, request, *args, **kwargs):
-        email = request.data.get('email')
-        if User.objects.filter(email=email).exists():
-            return Response({"error": "A user with this email already exists."}, status=status.HTTP_400_BAD_REQUEST)
-        
-        print("User created:", request.data)
-        return super().create(request, *args, **kwargs)
+class UserViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['post'], url_path='login')
     def login(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
 
-        try:
-            user = User.objects.get(email=email)
-            print(f"User found: {user}")
-        except User.DoesNotExist:
-            print("User not found.")
+        if not email or not password:
+            return Response({'error': 'Email and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Authenticate the user using username field as email
         user = authenticate(request, username=email, password=password)
 
-
-        print(f"tryna log in {email}", user)
-
-        print("Type of user object:", type(user))
-
         if user is not None:
-            # Generate a token for the user
-            print("Authenticated User:", user)  # Print user details
-            token, created = Token.objects.get_or_create(user=user)
-            # login(request, user)
-            return Response({'token': token.key, 'email': user.email, 'user_id': user.id}, status=status.HTTP_200_OK)
+            try:
+                token, created = Token.objects.get_or_create(user=user)
+                return Response({'token': token.key, 'email': user.email, 'user_id': user.id},
+                                status=status.HTTP_200_OK)
+            except Exception as e:
+                print(f"Error during token creation: {e}")
+                return Response({'error': 'Token creation failed.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
-            print("Authentication failed for email:", email)  # Print error message
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
-
-class CollectorUserViewSet(viewsets.ModelViewSet):
-    queryset = CollectorUser.objects.all()
-    serializer_class = CollectorUser
+# class CollectorUserViewSet(viewsets.ModelViewSet):
+#     queryset = CollectorUser.objects.all()
+#     serializer_class = CollectorUser

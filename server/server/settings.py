@@ -56,7 +56,7 @@ MIDDLEWARE = [
 ]
 
 AUTHENTICATION_BACKENDS = (
-    'user.backends.EmailBackend',  
+    'user.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',  # Keep the default backend as a fallback
 )
 
@@ -109,6 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+
 ]
 
 
