@@ -38,7 +38,8 @@ class UserViewSet(viewsets.ModelViewSet):
         if user is not None:
             token, created = Token.objects.get_or_create(user=user)
             profile, created = UserProfile.objects.get_or_create(user=user)
-            return Response({'token': token.key, 'email': user.email, 'user_id': user.id, 'role': user.profile.role}, status=status.HTTP_200_OK)
+            return Response({'token': token.key, 'email': user.email, 'user_id': user.id, 'role': user.profile.role,
+                             "collector_id": user.profile.collector_id}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -57,6 +58,7 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['patch'], url_path='update')
     def partial_update_user(self, request, pk=None):
         user = self.get_object()
+        print(user)
         serializer = self.get_serializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()

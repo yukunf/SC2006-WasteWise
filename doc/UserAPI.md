@@ -76,7 +76,8 @@ POST /api/users/login/
   "token": "abcdef1234567890abcdef1234567890",  
   "email": "user@example.com",
   "user_id": 1,
-  "role":"general" 
+  "role":"general",
+  "collector_id": 114514
 }
 ```
 
