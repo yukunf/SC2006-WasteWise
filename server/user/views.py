@@ -6,12 +6,20 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
 from rest_framework.decorators import action
 from rest_framework import viewsets
 
+from server.user.serializers import RegisterGeneralUserSerializer
 
-class UserViewSet(viewsets.ViewSet):
+
+class GeneralUserViewSet(viewsets.ViewSet):
+    @action(detail=False, methods=['post'], url_path='register')
+    def register(self, request):
+        serializer = RegisterGeneralUserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()  # set username=email
+            return Response({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['post'], url_path='login')
     def login(self, request):

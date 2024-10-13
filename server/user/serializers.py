@@ -2,24 +2,28 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
+from server.user.models import GeneralUser
 
-class UserSerializer(serializers.ModelSerializer):
+
+class GeneralUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['id', 'firstName', 'lastName', 'email', 'password', 'termsAgreed', 'role']
+        model = GeneralUser
+        fields = GeneralUser.field_names + ['role']
 
 
-class RegisterSerializer(serializers.ModelSerializer):
+class RegisterGeneralUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['first_name', 'last_name', 'email', 'password', 'termsAgreed', 'role']
+        model = GeneralUser
+        fields = ['email', 'password', 'first_name', 'last_name', 'role']
 
     def create(self, validated_data):
         # 使用 email 作为 username
         user = User.objects.create_user(
-            username=validated_data['email'],  # 自动生成用户名
+            username=validated_data['email'],
             email=validated_data['email'],
-            password=validated_data['password']
+            password=validated_data['password'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
         )
         return user
 

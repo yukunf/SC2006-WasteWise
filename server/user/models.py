@@ -1,5 +1,5 @@
 # user/models.py
-
+from django.contrib.auth.models import AbstractUser
 # Create your models here.
 from django.db import models
 import uuid
@@ -11,6 +11,12 @@ class Role(models.TextChoices):
     GENERAL = 'general', 'General'
     COLLECTOR = 'collector', 'Collector'
     REGULATOR = 'regulator', 'Regulator'
+
+
+class GeneralUser(AbstractUser):
+    role = models.CharField(max_length=20, choices=Role.choices, default=Role.GENERAL)
+
+
 
 
 # class User(models.Model):
