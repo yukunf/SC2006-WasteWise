@@ -1,4 +1,5 @@
 # user/views.py
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 # from django.shortcuts import render
 #
@@ -61,14 +62,15 @@ from .serializers import RegisterSerializer
 User = get_user_model()
 
 
-class UserViewSet(viewsets.ViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
+    serializer_class = RegisterSerializer
 
     @action(detail=False, methods=['post'], url_path='register')
     def register(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()  # 自动将 username 设置为 email
+            serializer.save()  #
             return Response({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -88,3 +90,30 @@ class UserViewSet(viewsets.ViewSet):
             return Response({'token': token.key, 'email': user.email, 'user_id': user.id}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    # def get_object(self):
+    #     username = self.kwargs.get("pk")  # Get username
+    #     return get_object_or_404(User, username=username)  # Find object by username
+    @action(detail=True, methods=['put'], url_path='updateall')
+    def update_user(self, request, pk=None):
+        user = self.get_object()
+        serializer = self.get_serializer(user, data=request.data, partial=False)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'User updated successfully'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['patch'], url_path='update')
+    def partial_update_user(self, request, pk=None):
+        user = self.get_object()
+        serializer = self.get_serializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'User partially updated successfully'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['delete'], url_path='delete')
+    def delete_user(self, request, pk=None):
+        user = self.get_object()
+        user.delete()
+        return Response({'message': 'User deleted successfully'}, status=status.HTTP_204_NO_CONTENT)

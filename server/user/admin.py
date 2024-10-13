@@ -20,7 +20,7 @@ User = get_user_model()
 
 class UserProfileInline(admin.StackedInline):  #  StackedInline to display vertically
     model = UserProfile
-    can_delete = False  # 禁止删除扩展表
+    can_delete = False  #
     verbose_name_plural = 'Profile Information'
 
 

@@ -48,6 +48,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         #extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
+        profile_data = validated_data.pop('profile', {})  # Fussy now... they are stored in external table
         role = validated_data.pop('role')
         collector_id = validated_data.pop('collector_id', None)
 
@@ -62,3 +63,25 @@ class RegisterSerializer(serializers.ModelSerializer):
         # Create Extension Table
         UserProfile.objects.create(user=user, role=role, collector_id=collector_id)
         return user
+
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop('profile', {})
+        role = profile_data.get('role')
+        collector_id = profile_data.get('collector_id')
+        # Get our fields also
+
+        # Update User
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.email = validated_data.get('email', instance.email)
+        instance.save()
+
+        # Update UserProfile
+        profile = instance.profile
+        if role:
+            profile.role = role
+        if collector_id is not None:
+            profile.collector_id = collector_id
+        profile.save()
+
+        return instance
