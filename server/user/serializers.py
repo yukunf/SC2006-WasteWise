@@ -1,35 +1,4 @@
-# user/serializer.py
-from rest_framework import serializers
-
-# from .models import GeneralUser
-#
-#
-# class GeneralUserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = GeneralUser
-#         fields = ['email', 'password', 'first_name', 'last_name', 'role']
-#
-#
-# class RegisterGeneralUserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = GeneralUser
-#         fields = ['email', 'password', 'first_name', 'last_name', 'role']
-#
-#     def create(self, validated_data):
-#         # 使用 email 作为 username
-#         user = User.objects.create_user(
-#             username=validated_data['email'],
-#             email=validated_data['email'],
-#             password=validated_data['password'],
-#             first_name=validated_data['first_name'],
-#             last_name=validated_data['last_name'],
-#         )
-#         return user
-
-# class CollectorUserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = CollectorUser
-#         fields = UserSerializer.Meta.fields + ['collector_id']
+import os
 
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
@@ -39,13 +8,17 @@ User = get_user_model()
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    role = serializers.ChoiceField(choices=UserProfile._meta.get_field('role').choices)
+    role = serializers.ChoiceField(choices=UserProfile._meta.get_field('role').choices, required=False)
     collector_id = serializers.IntegerField(required=False, allow_null=True)
 
     class Meta:
         model = User
         fields = ['email', 'password', 'first_name', 'last_name', 'role', 'collector_id']
         #extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {
+            'password': {'write_only': True, 'required': False},  # Not Required for partial update
+            'role': {'required': False, 'allow_null': True},  # role can be null
+        }
 
     def create(self, validated_data):
         profile_data = validated_data.pop('profile', {})  # Fussy now... they are stored in external table
@@ -65,19 +38,27 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
-        profile_data = validated_data.pop('profile', {})
-        role = profile_data.get('role')
-        collector_id = profile_data.get('collector_id')
-        # Get our fields also
-
-        # Update User
+        print("in update():" + str(validated_data))
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.email = validated_data.get('email', instance.email)
         instance.save()
 
         # Update UserProfile
-        profile = instance.profile
+        profile, created = UserProfile.objects.get_or_create(user=instance)
+
+        #
+        role = validated_data.get('role')
+        collector_id = validated_data.get('collector_id')
+
+        # Update profile
+
+        password = validated_data.get('password', None)
+        if password:
+            instance.set_password(password)  # 使用 set_password 处理密码哈希
+        instance.save()
+
+
         if role:
             profile.role = role
         if collector_id is not None:
