@@ -1,132 +1,292 @@
-# User API Documentation
+# User Management API
 
-## Overview
-This API provides basic CRUD operations for user resources, including creating, reading, updating, and deleting users. Each user includes the following fields:
-- `id` (string): Unique identifier for the user (UUID)
-- `username` (string): Username
-- `email` (string): User's email address
-- `password` (string): User's password
-- `role` (enum): User role, possible values are `general`, `collector`, `regulator`
+This API allows you to manage users and their profiles. You can create users, retrieve user details, update user information, and delete users. Additionally, users can be updated fully (with `updateall`) or partially (with `update`).
 
-For CollectorUser, they have one more field
-- `collector_id`(integer): the collector ID corresponding to the ID of the entry in the collector info database
-
-As regulators doesn't have extra fields, they stay in the same database with general user.
 ## Base URL
-The base URL for all API endpoints is:
 
 ```
-https://<your-domain>/api/users/
-https://<your-domain>/api/collector-users/
+http://localhost:8000/api/
 ```
+
+---
 
 ## Endpoints
 
-When getting a collector user, they will have one more `collector_id` field, 
-others are all same, so only one example is given.
+### 1. **Register a New User**
 
-### Get User List
-- **URL**: `/api/users/`
-- **Method**: GET
-- **Description**: Retrieve a list of all users.
-- **Response Example**:
-  ```json
-  [
-    {
-      "id": "123e4567-e89b-12d3-a456-426614174000",
-      "username": "user1",
-      "email": "user1@example.com",
-      "password": "hashed_password",
-      "role": "general"
-    },
-    ...
-  ]
-  ```
-  
-### Get Collector User List
-- **URL**: `/api/collector-users/`
-- **Method**: GET
-- **Description**: Retrieve a list of all collector users.
-- **Response Example**:
-  ```json
-  [
-    {
-      "id": "123e4567-e89b-12d3-a456-426614174000",
-      "username": "user1",
-      "email": "user1@example.com",
-      "password": "hashed_password",
-      "role": "general",
-      "collector_id": "0"
-    },
-    ...
-  ]
-  ```
+- **Endpoint**: `/users/register/`
+- **Method**: `POST`
+- **Description**: Creates a new user along with a `UserProfile`. The `role` and `collector_id` fields are stored in the `UserProfile`.
 
-### Get Single User
-- **URL**: `/api/users/{id}/`
-- **Method**: GET
-- **Description**: Retrieve details of a user by ID.
-- **Response Example**:
-  ```json
-  {
-    "id": "123e4567-e89b-12d3-a456-426614174000",
-    "username": "user1",
-    "email": "user1@example.com",
-    "password": "hashed_password",
-    "role": "general"
-  }
-  ```
+#### Request Body
 
-### Create New User
-- **URL**: `/api/users/`
-- **Method**: POST
-- **Description**: Create a new user.
-- **Request Example**:
-  ```json
-  {
-    "username": "newuser",
-    "email": "newuser@example.com",
-    "password": "new_password",
-    "role": "collector"
-  }
-  ```
-- **Response Example**:
-  ```json
-  {
-    "id": "123e4567-e89b-12d3-a456-426614174001",
-    "username": "newuser",
-    "email": "newuser@example.com",
-    "password": "hashed_password",
-    "role": "collector"
-  }
-  ```
+```json
+{
+  "email": "user@example.com",
+  "password": "password123",
+  "first_name": "John",
+  "last_name": "Doe",
+  "role": "collector",
+  "collector_id": 12345
+}
+```
 
-### Update User
-- **URL**: `/api/users/{id}/`
-- **Method**: PUT or PATCH
-- **Description**: Update information of a user by ID.
-- **Request Example**:
-  ```json
-  {
-    "username": "updateduser",
-    "email": "updateduser@example.com",
-    "password": "updated_password",
-    "role": "regulator"
-  }
-  ```
-- **Response Example**:
-  ```json
-  {
-    "id": "123e4567-e89b-12d3-a456-426614174000",
-    "username": "updateduser",
-    "email": "updateduser@example.com",
-    "password": "hashed_password",
-    "role": "regulator"
-  }
-  ```
+#### Response
 
-### Delete User
-- **URL**: `/api/users/{id}/`
-- **Method**: DELETE
-- **Description**: Delete a user by ID.
-- **Response**: No content, status code 204
+- **Status**: `201 Created`
+- **Body**:
+
+```json
+{
+  "message": "User created successfully"
+}
+```
+---
+
+### 2. **Login User**
+### **Endpoint**: `/users/login/`
+
+- **Method**: `POST`
+- **Description**: Authenticates a user based on their email and password. Returns an authentication token if the login is successful.
+
+#### Request
+
+##### URL
+
+```
+POST /api/users/login/
+```
+
+##### Request Body (JSON)
+
+```json
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+#### Response
+
+- **Status**: `200 OK` (On successful login)
+- **Body**:
+
+```json
+{
+  "token": "abcdef1234567890abcdef1234567890",  
+  "email": "user@example.com",
+  "user_id": 1,
+  "role":"general" 
+}
+```
+
+- **Status**: `401 Unauthorized` (If authentication fails)
+- **Body**:
+
+```json
+{
+  "error": "Invalid credentials"
+}
+```
+
+---
+
+### **Authentication**
+
+After logging in and receiving a token, this token should be included in the headers of future authenticated requests.
+
+#### Example of Using the Token:
+
+Include the token in the `Authorization` header for authenticated requests.
+
+```
+Authorization: Token abcdef1234567890abcdef1234567890
+```
+
+#### Example Authenticated Request:
+
+```bash
+GET /api/users/1/
+Authorization: Token abcdef1234567890abcdef1234567890
+```
+
+### Notes:
+
+- **Token Expiration**: The token does not expire by default, but you may want to implement token expiration based on your needs.
+- **Error Handling**: If the email or password is incorrect, the response will return a `401 Unauthorized` status with an error message.
+
+---
+
+### Common Issues:
+
+- **Invalid Credentials**: If the provided email or password is incorrect, the API will return a `401 Unauthorized` error.
+- **Token Not Provided**: For authenticated requests, if no token is provided or the token is invalid, the API will return a `401 Unauthorized` response.
+
+This API allows users to log in using their email and password, and it returns an authentication token for subsequent authenticated requests.
+### 3. **Retrieve User Details**
+
+- **Endpoint**: `/users/<id>/`
+- **Method**: `GET`
+- **Description**: Retrieves the details of a specific user by their `id`.
+
+#### Request
+
+- **URL Parameters**:
+  - `id`: The unique identifier of the user.
+
+#### Response
+
+- **Status**: `200 OK`
+- **Body**:
+
+```json
+{
+  "id": 1,
+  "email": "user@example.com",
+  "first_name": "John",
+  "last_name": "Doe",
+  "role": "collector",
+  "collector_id": 12345
+}
+```
+
+---
+
+### 4. **Full Update of User Information**
+
+- **Endpoint**: `/users/<id>/updateall/`
+- **Method**: `PUT`
+- **Description**: Fully updates the user and profile information. All fields are required.
+
+#### Request
+
+- **URL Parameters**:
+  - `id`: The unique identifier of the user.
+
+#### Request Body
+
+```json
+{
+  "email": "updateduser@example.com",
+  "first_name": "UpdatedFirst",
+  "last_name": "UpdatedLast",
+  "role": "admin",
+  "collector_id": 54321
+}
+```
+
+#### Response
+
+- **Status**: `200 OK`
+- **Body**:
+
+```json
+{
+  "id": 1,
+  "email": "updateduser@example.com",
+  "first_name": "UpdatedFirst",
+  "last_name": "UpdatedLast",
+  "role": "admin",
+  "collector_id": 54321
+}
+```
+
+---
+
+### 5. **Partial Update of User Information**
+
+- **Endpoint**: `/users/<id>/update/`
+- **Method**: `PATCH`
+- **Description**: Partially updates user and profile information. Only the provided fields will be updated.
+
+#### Request
+
+- **URL Parameters**:
+  - `id`: The unique identifier of the user.
+
+#### Request Body
+
+```json
+{
+  "first_name": "UpdatedFirst",
+  "role": "admin"
+}
+```
+
+#### Response
+
+- **Status**: `200 OK`
+- **Body**:
+
+```json
+{
+  "id": 1,
+  "email": "user@example.com",
+  "first_name": "UpdatedFirst",
+  "last_name": "Doe",
+  "role": "admin",
+  "collector_id": 12345
+}
+```
+
+---
+
+### 6. **Delete a User**
+
+- **Endpoint**: `/users/<id>/`
+- **Method**: `DELETE`
+- **Description**: Deletes a specific user by their `id`.
+
+#### Request
+
+- **URL Parameters**:
+  - `id`: The unique identifier of the user.
+
+#### Response
+
+- **Status**: `204 No Content`
+
+---
+
+### 7. **List All Users**
+
+- **Endpoint**: `/users/`
+- **Method**: `GET`
+- **Description**: Retrieves a list of all users.
+
+#### Response
+
+- **Status**: `200 OK`
+- **Body**:
+
+```json
+[
+  {
+    "id": 1,
+    "email": "user@example.com",
+    "first_name": "John",
+    "last_name": "Doe",
+    "role": "collector",
+    "collector_id": 12345
+  },
+  {
+    "id": 2,
+    "email": "anotheruser@example.com",
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "role": "admin",
+    "collector_id": null
+  }
+]
+```
+
+---
+
+## Notes
+
+- **Authorization**: If authentication is required, include the appropriate authentication headers.
+- **Error Handling**: On validation errors or failed requests, the API will return a `400 Bad Request` or a relevant HTTP status code along with an error message.
+
+---
+
+This API allows for full and partial updates on user data, as well as creation, retrieval, and deletion of user accounts. You can modify the `role` and `collector_id` fields, which are part of the user's profile.
