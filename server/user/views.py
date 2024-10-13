@@ -51,9 +51,7 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['put'], url_path='updateall')
     def update_user(self, request, pk=None):
         user = self.get_object()
-        print("\n\n\n\n"+user+"\n\n\n\n")
         serializer = self.get_serializer(user, data=request.data, partial=True)
-        print("\n\n\n\n" + user + "\n\n\n\n")
         if serializer.is_valid():
             serializer.save()
             return Response({'message': 'User updated successfully'}, status=status.HTTP_200_OK)
