@@ -7,8 +7,8 @@ const wastewiseLogoVer2 = require("../images/wastewiseLogoVer2.png")
 const GeneralRegistration = () => {
 
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
+        first_name: '',
+        last_name: '',
         email: '',
         password: '',
         confirmPassword: '',
@@ -82,12 +82,12 @@ const GeneralRegistration = () => {
                         <div className="flex justify-between gap-4">
                             <input type="text"
                                 name="firstName"
-                                value={formData.firstName}
+                                value={formData.first_name}
                                 onChange={handleChange} 
                                 className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your first name"/>
                             <input type="text"
                                 name="lastName"
-                                value={formData.lastName}
+                                value={formData.last_name}
                                 onChange={handleChange} 
                                 className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your last name"/>
                         </div>
