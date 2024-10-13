@@ -4,8 +4,11 @@
 
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 User = get_user_model()
+
 
 class Role(models.TextChoices):
     GENERAL = 'general', 'General'
@@ -19,7 +22,16 @@ class UserProfile(models.Model):
     collector_id = models.IntegerField(blank=True, null=True)
 
 
+# Created the profile, to avoid no objects created
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
 
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
 
 #
 #
@@ -27,8 +39,6 @@ class UserProfile(models.Model):
 #
 #
 #     role = models.CharField(max_length=20, choices=Role.choices, default=Role.GENERAL)
-
-
 
 
 # class User(models.Model):
