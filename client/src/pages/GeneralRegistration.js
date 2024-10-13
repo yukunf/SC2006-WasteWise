@@ -13,7 +13,8 @@ const GeneralRegistration = () => {
         password: '',
         confirmPassword: '',
         termsAgreed: false,
-        role: 'general' // Set default role
+        role: 'general', // Set default role
+        collector_id:-1 // Default Collector ID when it has no meaning
     });
     const navigate = useNavigate();
 
@@ -42,7 +43,7 @@ const GeneralRegistration = () => {
         const { termsAgreed, confirmPassword, ...newFormData } = formData;
         // This is to get rid of unwanted data
         try {
-            const response = await fetch('http://localhost:8000/api/users/', {
+            const response = await fetch('http://localhost:8000/api/users/register/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,11 +1,11 @@
 # user/models.py
-from django.contrib.auth.models import AbstractUser
 # Create your models here.
+
+
+from django.contrib.auth import get_user_model
 from django.db import models
-import uuid
-from django.contrib.auth.hashers import make_password, check_password
 
-
+User = get_user_model()
 
 class Role(models.TextChoices):
     GENERAL = 'general', 'General'
@@ -13,8 +13,20 @@ class Role(models.TextChoices):
     REGULATOR = 'regulator', 'Regulator'
 
 
-class GeneralUser(AbstractUser):
-    role = models.CharField(max_length=20, choices=Role.choices, default=Role.GENERAL)
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    role = models.CharField(max_length=10, choices=Role.choices, default=Role.GENERAL)
+    collector_id = models.IntegerField(blank=True, null=True)
+
+
+
+
+#
+#
+# class GeneralUser(AbstractUser):
+#
+#
+#     role = models.CharField(max_length=20, choices=Role.choices, default=Role.GENERAL)
 
 
 
