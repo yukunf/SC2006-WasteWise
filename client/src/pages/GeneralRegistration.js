@@ -84,12 +84,12 @@ const GeneralRegistration = () => {
                         </div>
                         <div className="flex justify-between gap-4">
                             <input type="text"
-                                name="firstName"
+                                name="first_name"
                                 value={formData.first_name}
                                 onChange={handleChange} 
                                 className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your first name"/>
                             <input type="text"
-                                name="lastName"
+                                name="last_name"
                                 value={formData.last_name}
                                 onChange={handleChange} 
                                 className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your last name"/>
