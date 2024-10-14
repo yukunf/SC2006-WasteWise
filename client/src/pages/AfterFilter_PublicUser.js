@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom'; // Make sure this import is here
 import NavBar_PublicUser from "../components/NavBar_PublicUser"; // Import the Navbar
-import NameOrFilter from "../components/NameOrFilter_PublicUser";
+import NameOrFilter from "../components/NameOrFilter";
 
 
 

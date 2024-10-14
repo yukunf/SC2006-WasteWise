@@ -39,13 +39,29 @@ const Login = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                const { token } = data; // Assuming your backend returns a token
+                console.log("Login successful, response data: ", data);
 
-                // Store authentication token
-                localStorage.setItem("token", token); // Save token in local storage
+                // Store token and user details
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user_id', data.user_id);
+                localStorage.setItem('email', data.email);
+                localStorage.setItem('collector_id', data.collector_id);
+                localStorage.setItem('role', data.role);
 
-                // Redirect to the home page after successful login
-                navigate("/"); // Adjust to your desired route
+                // Redirect to respective home page after successful login
+                if (localStorage.getItem('role') == 'general') {
+                    navigate("/Home_GeneralUser");
+                }
+                else if (localStorage.getItem('role') == 'collector') {
+                    navigate("/Home_Collector");
+                }
+                else if (localStorage.getItem('role') == 'regulator') {
+                    navigate("/Home_Regulator");
+                }
+                else {
+                    navigate("/");
+                }
+                    
             } else {
                 setErrorMessage("Invalid email or password."); // Set error message for invalid login
             }

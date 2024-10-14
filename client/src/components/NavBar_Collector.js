@@ -1,10 +1,23 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate} from 'react-router-dom';
 
 const wastewiseLogo = require("../images/logo_master.png");
 
 const Navbar_Collector = () => {
     const location = useLocation(); // Get the current location
+
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        // Remove token from localStorage (or session storage)
+        localStorage.removeItem('token');
+    
+        // Optionally, you can also clear other user-related data
+        localStorage.removeItem('user'); 
+    
+        // Redirect to the login page after logging out
+        navigate('/login');
+    };
 
     return (
         <nav
@@ -64,6 +77,7 @@ const Navbar_Collector = () => {
                     style={{
                         backgroundColor: "#016A70", // Green background color
                     }}
+                    onClick={handleLogout}
                 >
                     Log Out
                 </Link>

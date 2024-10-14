@@ -22,7 +22,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()  #
-            print(request.data)
+            print("just registered, ", request.data)
             return Response({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -40,8 +40,8 @@ class UserViewSet(viewsets.ModelViewSet):
         if user is not None:
             token, created = Token.objects.get_or_create(user=user)
             profile, created = UserProfile.objects.get_or_create(user=user)
-            return Response({'token': token.key, 'email': user.email, 'user_id': user.id, 'role': user.profile.role,
-                             "collector_id": user.profile.collector_id}, status=status.HTTP_200_OK)
+            return Response({'token': token.key, 'email': user.email, 'user_id': user.id, 'role': profile.role,
+                             "collector_id": profile.collector_id, "collector_company": profile.collector_company}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 

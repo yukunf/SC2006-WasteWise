@@ -9,11 +9,12 @@ User = get_user_model()
 
 class RegisterSerializer(serializers.ModelSerializer):
     role = serializers.ChoiceField(choices=UserProfile._meta.get_field('role').choices, required=False)
+    collector_company = serializers.CharField(required=False, allow_null=True)
     collector_id = serializers.IntegerField(required=False, allow_null=True)
 
     class Meta:
         model = User
-        fields = ['email', 'password', 'first_name', 'last_name', 'role', 'collector_id']
+        fields = ['email', 'password', 'first_name', 'last_name', 'collector_company', 'role', 'collector_id']
         #extra_kwargs = {'password': {'write_only': True}}
         extra_kwargs = {
             'password': {'write_only': True, 'required': False},  # Not Required for partial update
@@ -23,6 +24,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         profile_data = validated_data.pop('profile', {})  # Fussy now... they are stored in external table
         role = validated_data.pop('role')
+        collector_company = validated_data.pop('collector_company', None)
         collector_id = validated_data.pop('collector_id', None)
 
         user = User.objects.create_user(
@@ -34,7 +36,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
 
         # Create Extension Table
-        UserProfile.objects.get_or_create(user=user, defaults={'role': role, 'collector_id': collector_id})
+        UserProfile.objects.get_or_create(user=user, defaults={'role': role, 'collector_id': collector_id, 'collector_company' : collector_company})
         return user
 
     def update(self, instance, validated_data):
