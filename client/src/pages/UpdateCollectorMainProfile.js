@@ -108,8 +108,7 @@ const UpdateCollectorMainProfile = () => {
             <div>
                 <Footer />
             </div>
-
-        </div>
+        </div> 
     )
 }
 
