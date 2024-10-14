@@ -5,7 +5,7 @@ import NameOrFilter from "../components/NameOrFilter_GeneralUser";
 
 
 const AfterFilter_GeneralUser = () => {
-    const companies = [
+    const companies = [ 
         "ANG ENG GUAN TRADING AS ENG LEE GUAN TRADING",
         "ANG HOCK GUAN TRADING AS ANG HOCK GUAN TRANSPORT SERVICE",
         "ANG KHEN TEE TRADING AS RECYCLE-PLUS DISPOSAL TRADING",
@@ -16,6 +16,8 @@ const AfterFilter_GeneralUser = () => {
         "ANG SOON HUAT TRADING AS SOON HUAT TRANSPORT",
         "BAN HOCK HIN TRADING AS BAN HOCK HIN TRANSPORT",
         "BAN HOCK HUAT TRADING AS BAN HOCK HUAT TRANSPORT",
+        "IDK HAHAHHA COMPANY TESTINGHOHO",
+        "IKR HAHAHHA COMPANY TESTINGHOHO"
         // Add more company names here
     ];
 
