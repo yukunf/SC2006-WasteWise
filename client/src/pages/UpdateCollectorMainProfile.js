@@ -99,7 +99,7 @@ const UpdateCollectorMainProfile = () => {
                     <div className="flex justify-end gap-8 mt-7">
                         <Link to="/CollectorMainProfile" className="bg-gray-200 py-2 px-8 rounded text-base font-semibold ">Cancel</Link>
                         <button onClick={handleUpdate} className="bg-[#016A70] hover:bg-teal-800 text-white py-2 px-9 rounded text-base font-semibold">
-                            Update Profile hello test
+                            Update Profile
                         </button>
                     </div>
                 </div>
