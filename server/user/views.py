@@ -67,8 +67,17 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['patch'], url_path='update')
     def partial_update_user(self, request, pk=None):
         user = self.get_object()
-        print(user)
+        print(print(f"On testing partial Update: {request.data}"))
         serializer = self.get_serializer(user, data=request.data, partial=True)
+
+        newRole = request.data.get('role')
+        newCollectorID = request.data.get('collector_id')
+        if not newRole is None:
+            user.profile.role = newRole
+            user.profile.save()
+        if not newCollectorID is None:
+            user.profile.collector_id = newCollectorID
+            user.profile.save()
         if serializer.is_valid():
             serializer.save()
             return Response({'message': 'User partially updated successfully'}, status=status.HTTP_200_OK)
