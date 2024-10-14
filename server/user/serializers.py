@@ -34,7 +34,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
 
         # Create Extension Table
-        UserProfile.objects.create(user=user, role=role, collector_id=collector_id)
+        UserProfile.objects.get_or_create(user=user, defaults={'role': role, 'collector_id': collector_id})
         return user
 
     def update(self, instance, validated_data):
