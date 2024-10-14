@@ -1,22 +1,13 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
-class UserReport(models.Model):
-    collector = models.CharField(max_length=255)
-    reason = models.CharField(max_length=255)
-    comments = models.TextField(blank=True, null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Report against {self.collector} by {self.user.username}"
-
+User = get_user_model()
 
 class Ratings(models.Model):
     collectorID = models.IntegerField()
     rating = models.IntegerField()
     comment = models.TextField()
-    userID = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
