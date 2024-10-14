@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Footer from "../components/Footer";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import Navbar_GeneralUser from "../components/NavBar_GeneralUser";
 
 const Activities = () => {
 
@@ -87,6 +88,7 @@ const Activities = () => {
 
     return (
         <div className="w-full h-full">
+            <Navbar_GeneralUser />
             <div className="flex flex-col lg:flex-row bg-[#016a70] h-[70vh]" style={{paddingLeft:"10%",paddingRight:"10%",paddingTop:"50px"}}>
                 <h1 className="text-[#FFFDF7] font-poppins w-full text-7xl font-bold mt-[150px] text-left">Display Activities Done</h1>
             </div>

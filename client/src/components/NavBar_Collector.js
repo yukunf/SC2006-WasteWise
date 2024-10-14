@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-const wastewiseLogo = require("../images/wastewiseLogoVer2.png");
+const wastewiseLogo = require("../images/logo_master.png");
 
-const Navbar_PublicUser = () => {
+const Navbar_Collector = () => {
     const location = useLocation(); // Get the current location
 
     return (
@@ -29,55 +29,47 @@ const Navbar_PublicUser = () => {
                 {/* Home Link */}
                 <li>
                     <Link
-                        to="/"
-                        className={`text-lg font-semibold ${location.pathname === '/' ? 'text-[#016a70]' : 'text-[#393E46]'} hover:text-[#004f57]`}
+                        to="/Home_Collector"
+                        className={`text-lg font-semibold ${location.pathname === '/Home_Collector' ? 'text-[#016a70]' : 'text-[#393E46]'} hover:text-[#004f57]`}
                     >
                         Home
                     </Link>
                 </li>
-                {/* Search Link */}
+                {/* Company Link */}
                 <li>
                     <Link
-                        to="/search-public"
-                        className={`text-lg font-semibold ${(location.pathname === '/search-public' || location.pathname === '/filter-public' || location.pathname === '/after-filter-public' || location.pathname === '/display-info-public/:')  ? 'text-[#016a70]' : 'text-[#393E46]'} hover:text-[#004f57]`}
+                        to="/CollectorProfilePage"
+                        className={`text-lg font-semibold ${(location.pathname === '/CollectorProfilePage' || location.pathname === '/UpdateCollectorProfile' ) ? 'text-[#016a70]' : 'text-[#393E46]'} hover:text-[#004f57]`}
                     >
-                        Search
+                        Company
                     </Link>
-                </li>
-                {/* Visualisations Link */}
+                </li>              
+                {/* Profile Link */}
                 <li>
                     <Link
-                        to="/visualisations"
-                        className={`text-lg font-semibold ${location.pathname === '/visualisations' ? 'text-[#016a70]' : 'text-[#393E46]'} hover:text-[#004f57]`}
+                        to="/CollectorMainProfile"
+                        className={`text-lg font-semibold ${(location.pathname === '/CollectorMainProfile' || location.pathname === '/UpdateCollectorMainProfile') ? 'text-[#016a70]' : 'text-[#393E46]'} hover:text-[#004f57]`}
                     >
-                        Visualisations
+                        Profile
                     </Link>
                 </li>
-                {/* Contact Link */}
-                <li>
-                    <Link
-                        to="/contact"
-                        className={`text-lg font-semibold ${location.pathname === '/contact' ? 'text-[#016a70]' : 'text-[#393E46]'} hover:text-[#004f57]`}
-                    >
-                        Contact
-                    </Link>
-                </li>
+                
             </ul>
 
-            {/* Register Button */}
+            {/* LogOut Button */}
             <div className="mr-10">
                 <Link 
-                    to="/general-registration" 
+                    to="/" 
                     className="inline-flex justify-center items-center gap-[10px] px-[20px] py-[8px] text-white font-semibold rounded-[10px]"
                     style={{
                         backgroundColor: "#016A70", // Green background color
                     }}
                 >
-                    Register
+                    Log Out
                 </Link>
             </div>
         </nav>
     );
 };
 
-export default Navbar_PublicUser;
+export default Navbar_Collector;
