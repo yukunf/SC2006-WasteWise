@@ -15,7 +15,7 @@ const AfterFilter_GeneralUser = () => {
         "ANG SOON HOCK TRADING AS SOON HOCK TRANSPORT",
         "ANG SOON HUAT TRADING AS SOON HUAT TRANSPORT",
         "BAN HOCK HIN TRADING AS BAN HOCK HIN TRANSPORT",
-        "IDK HAHAHHA COMPANY"
+        "IDK HAHAHHA COMPANY TESTINGHOHO"
         // Add more company names here
     ];
 
