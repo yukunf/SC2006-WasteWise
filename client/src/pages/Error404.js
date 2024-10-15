@@ -1,6 +1,8 @@
 import React from "react";
 
 const Error404 = () => {
+    const role = localStorage.getItem('role')
+
     return (
       <div className="flex flex-col justify-center h-screen bg-green-100" style={{paddingLeft:"10%",paddingRight:"10%",paddingTop:"50px"}}>
         <div>
@@ -14,7 +16,7 @@ const Error404 = () => {
             Something's wrong, but don't worry, we will get you back on the right page!
           </p>
             <button
-              onClick={() => window.location.href = "/"}
+              onClick={role === 'general' ? () => window.location.href = "/Home_GeneralUser" : role === 'collector' ? () => window.location.href = "/Home_Collector" : role === 'regulator' ? () => window.location.href = "/Home_Regulator" : () => window.location.href = "/"}
               className="px-6 py-3 bg-green-500 font-mono mt-10 text-white rounded-2xl hover:bg-green-600 transition duration-300">
               Come Back to Home
             </button>

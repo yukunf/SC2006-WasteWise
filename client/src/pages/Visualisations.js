@@ -49,7 +49,7 @@ const Visualisations = () => {
 
         // if (loading) return <p className='text-center text-gray-600 italic text-lg'>Loading...</p>;
         if (error) return <p className="text-center text-red-600 font-bold text-lg">Error fetching data: {error.message}</p>;
-        console.log("hello my data", data);
+        // console.log("hello my data", data);
 
     return (
         <div className="w-screen lg:w-full h-full">
