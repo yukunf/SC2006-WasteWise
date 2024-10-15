@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     #'user',
     'corsheaders',
     'rating',
+    'report',
     'user.apps.UserConfig',
     'rest_framework',
     'rest_framework.authtoken',

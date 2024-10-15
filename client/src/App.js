@@ -41,6 +41,9 @@ import CollectorProfilePage from './pages/CollectorProfilePage';
 import UpdateCollectorMainProfile from './pages/UpdateCollectorMainProfile';
 
 import CollectorMainProfile from './pages/CollectorMainProfile';
+import ReportsList from './pages/ReportsList';  // Adjust the import path based on your folder structure
+
+
 
 
 function App() {
@@ -66,7 +69,7 @@ function App() {
             <Route path="/rating" element={<Rating />} />
             <Route path="/CollectorMainProfile" element={<CollectorMainProfile />} />
             <Route path="/UpdateCollectorMainProfile" element={<UpdateCollectorMainProfile />} />            
-
+          
           <Route path="/Home_GeneralUser" element={<Home_GeneralUser />} />
           <Route path="/Home_Regulator" element={<Home_Regulator />} />
           <Route path="/Home_Collector" element={<Home_Collector />} />
@@ -79,6 +82,10 @@ function App() {
           <Route path="/generalprofilepage" element={<GeneralProfilePage />} />
           <Route path="/updatecollectorprofile" element={<UpdateCollectorProfile />} />
           <Route path="/collectorprofilepage" element={<CollectorProfilePage />} />
+          <Route path="/userreport/:collectorName" element={<UserReport />} />
+          <Route path="/reports-list" element={<ReportsList />} />
+
+
 
             {/* if user trying to access pages that doesn't exist! */}
             <Route path="*" element={<Error404 />} />
