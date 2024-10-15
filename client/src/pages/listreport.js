@@ -4,7 +4,7 @@ import Footer from "../components/Footer";
 import React, {useState} from "react";
 
 
-const Listreport = () => {
+const ListReport = () => {
 
     const [companies, setFilter] = useState(" ");
 
@@ -63,4 +63,4 @@ const Listreport = () => {
     );
 }
 
-export default Listreport;
+export default ListReport;

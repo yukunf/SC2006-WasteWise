@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-const NameOrFilter_PublicUser = () => {
+const NameOrFilter = () => {
     const location = useLocation(); // Get the current location
 
     return (
@@ -21,9 +21,9 @@ const NameOrFilter_PublicUser = () => {
             <div className="flex space-x-10 justify-center items-center">
                 {/* Name Button */}
                 <Link
-                    to="/search-public"
+                    to="/search"
                     className={`flex justify-center items-center px-6 py-2 rounded-lg ${
-                        (location.pathname === '/search-public' || location.pathname === '/Search_GeneralUser')
+                        (location.pathname === '/search' || location.pathname === '/Search_GeneralUser')
                             ? 'border-[#016A70] bg-[#016A70] text-white shadow-md'
                             : 'border-[#B7B7B7] bg-white text-black'
                     }`}
@@ -34,7 +34,7 @@ const NameOrFilter_PublicUser = () => {
                         fontWeight: "400",
                         lineHeight: "normal",
                         borderWidth: "1px", // Border width
-                        boxShadow: location.pathname === '/search-public' ? "0px 4px 4px 0px rgba(0, 0, 0, 0.25)" : "none",
+                        boxShadow: location.pathname === '/search' ? "0px 4px 4px 0px rgba(0, 0, 0, 0.25)" : "none",
                     }}
                 >
                     Name
@@ -65,4 +65,4 @@ const NameOrFilter_PublicUser = () => {
     );
 };
 
-export default NameOrFilter_PublicUser;
+export default NameOrFilter;
