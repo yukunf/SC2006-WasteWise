@@ -2,6 +2,7 @@ import React from "react";
 
 const Error404 = () => {
     const role = localStorage.getItem('role')
+    console.log("my current role", role)
 
     return (
       <div className="flex flex-col justify-center h-screen bg-green-100" style={{paddingLeft:"10%",paddingRight:"10%",paddingTop:"50px"}}>

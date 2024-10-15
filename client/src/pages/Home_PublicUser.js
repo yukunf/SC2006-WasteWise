@@ -210,7 +210,7 @@ const Home_PublicUser = () => {
                             <h2 className="text-xl font-bold">Find your desired waste collector</h2>
                             <p className="mt-2">Access detailed information, including contact numbers and licensing details, all in one place.</p>
                             <Link 
-                                to="/search-public" 
+                                to="/search" 
                                 className="inline-flex justify-center items-center gap-[10px] px-[20px] py-[8px] text-[#393E46] font-semibold rounded-[8px] mt-5"
                                 style={{
                                     background: "var(--Background-Default-Default, #FFF)",

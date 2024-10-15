@@ -112,8 +112,12 @@ const Display = () => {
                             <tr>
                                 <td className="border-b py-2 font-bold">Ratings</td>
                                 <td className="border-b py-2">
-                                    {Array(dummyData.ratings).fill("⭐").join(" ")}{" "}
-                                    {Array(5 - dummyData.ratings).fill("⭐").join(" ")}
+                                    {Array(dummyData.ratings).fill().map((_, index) => (
+                                        <span key={index} className="text-yellow-500 text-2xl">★</span>
+                                    ))}
+                                    {Array(5 - dummyData.ratings).fill().map((_, index) => (
+                                        <span key={index} className="text-gray-300 text-2xl">★</span>
+                                    ))}
                                 </td>
                             </tr>
                             <tr>

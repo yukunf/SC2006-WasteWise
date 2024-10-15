@@ -23,7 +23,7 @@ const NameOrFilter = () => {
                 <Link
                     to="/search"
                     className={`flex justify-center items-center px-6 py-2 rounded-lg ${
-                        (location.pathname === '/search' || location.pathname === '/Search_GeneralUser')
+                        (location.pathname === '/search')
                             ? 'border-[#016A70] bg-[#016A70] text-white shadow-md'
                             : 'border-[#B7B7B7] bg-white text-black'
                     }`}
@@ -42,9 +42,9 @@ const NameOrFilter = () => {
 
                 {/* Filter Button */}
                 <Link
-                    to="/filter-public"
+                    to="/filter"
                     className={`flex justify-center items-center px-6 py-2 rounded-lg ${
-                        (location.pathname === '/filter-public' || location.pathname === '/SearchByFilter_GeneralUser' || location.pathname === '/AfterFilter_PublicUser')
+                        (location.pathname === '/filter' || location.pathname === '/afterfilter')
                             ? 'border-[#016A70] bg-[#016A70] text-white shadow-md'
                             : 'border-[#B7B7B7] bg-white text-black'
                     }`}
@@ -55,7 +55,7 @@ const NameOrFilter = () => {
                         fontWeight: "400",
                         lineHeight: "normal",
                         borderWidth: "1px", // Border width
-                        boxShadow: (location.pathname === '/filter-public' || location.pathname === '/AfterFilter_PublicUser') ? "0px 4px 4px 0px rgba(0, 0, 0, 0.25)" : "none",
+                        boxShadow: (location.pathname === '/filter' || location.pathname === '/afterfilter') ? "0px 4px 4px 0px rgba(0, 0, 0, 0.25)" : "none",
                     }}
                 >
                     Filters

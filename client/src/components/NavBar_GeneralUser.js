@@ -10,11 +10,14 @@ const Navbar_GeneralUser = ( {collectorName}) => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        // Remove token from localStorage (or session storage)
+        // remove every info saved from localStorage
         localStorage.removeItem('token');
-    
-        // Optionally, you can also clear other user-related data
-        localStorage.removeItem('user'); 
+        localStorage.removeItem('user_id'); 
+        localStorage.removeItem('email');
+        localStorage.removeItem('collector_id'); 
+        localStorage.removeItem('role');
+
+        // localStorage.clear();
     
         // Redirect to the login page after logging out
         navigate('/login');
@@ -53,7 +56,7 @@ const Navbar_GeneralUser = ( {collectorName}) => {
                 <li>
                     <Link
                         to="/search"
-                        className={`text-lg font-semibold ${(location.pathname === '/search' || location.pathname === '/SearchByFilter_GeneralUser' || location.pathname === '/AfterFilter_GeneralUser' || location.pathname.includes('/display/')) ? 'text-[#016a70]' : 'text-[#393E46]'} hover:text-[#004f57]`}
+                        className={`text-lg font-semibold ${(location.pathname === '/search' || location.pathname === '/filter' || location.pathname === '/afterfilter' || location.pathname.includes('/display/')) ? 'text-[#016a70]' : 'text-[#393E46]'} hover:text-[#004f57]`}
                     >
                         Search
                     </Link>

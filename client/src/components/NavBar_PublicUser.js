@@ -39,7 +39,7 @@ const Navbar_PublicUser = () => {
                 <li>
                     <Link
                         to="/search"
-                        className={`text-lg font-semibold ${(location.pathname === '/search' || location.pathname === '/filter-public' || location.pathname === '/after-filter-public' || location.pathname.includes('/display/')) ? 'text-[#016a70]' : 'text-[#393E46]'} hover:text-[#004f57]`}
+                        className={`text-lg font-semibold ${(location.pathname === '/search' || location.pathname === '/filter' || location.pathname === '/afterfilter' || location.pathname.includes('/display/')) ? 'text-[#016a70]' : 'text-[#393E46]'} hover:text-[#004f57]`}
                     >
                         Search
                     </Link>

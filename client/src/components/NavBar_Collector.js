@@ -9,11 +9,14 @@ const Navbar_Collector = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        // Remove token from localStorage (or session storage)
+        // remove every info saved from localStorage
         localStorage.removeItem('token');
-    
-        // Optionally, you can also clear other user-related data
-        localStorage.removeItem('user'); 
+        localStorage.removeItem('user_id'); 
+        localStorage.removeItem('email');
+        localStorage.removeItem('collector_id'); 
+        localStorage.removeItem('role');
+
+        // localStorage.clear();
     
         // Redirect to the login page after logging out
         navigate('/login');
