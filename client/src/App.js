@@ -39,6 +39,7 @@ import UpdateCollectorMainProfile from './pages/UpdateCollectorMainProfile';
 import CollectorMainProfile from './pages/CollectorMainProfile';
 import Search from './pages/Search';
 import Display from './pages/Display';
+import PrivateRoute from './components/PrivateRoute';
 
 
 function App() {

@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import { Link } from 'react-router-dom'; // Make sure this import is here
 import NavBar_GeneralUser from "../components/NavBar_GeneralUser"; // Import the Navbar
-import NameOrFilter from "../components/NameOrFilter_GeneralUser";
+import NameOrFilter from "../components/NameOrFilter";
 
 
 const AfterFilter_GeneralUser = () => {

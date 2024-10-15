@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import { Link } from 'react-router-dom'; // Make sure this import is here
 import NavBar_PublicUser from "../components/NavBar_PublicUser"; // Import the Navbar
-import NameOrFilter from "../components/NameOrFilter_PublicUser";
+import NameOrFilter from "../components/NameOrFilter";
 import magnifyingGlass from '../images/magnifyingGlass.png'; // Import the magnifying glass icon
 import largeImage from '../images/class.png'; // Update this path to the uploaded image
 
