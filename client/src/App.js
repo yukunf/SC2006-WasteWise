@@ -41,8 +41,8 @@ import CollectorProfilePage from './pages/CollectorProfilePage';
 import UpdateCollectorMainProfile from './pages/UpdateCollectorMainProfile';
 
 import CollectorMainProfile from './pages/CollectorMainProfile';
-import ReportsList from './pages/ReportsList';  // Adjust the import path based on your folder structure
 
+import ReportDetail from './pages/ReportDetail';
 
 
 
@@ -63,7 +63,8 @@ function App() {
             <Route path="/after-filter-public" element={<AfterFilter_PublicUser />} />
             <Route path="/display-info-public/:name" element={<Display_PublicUser />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/report" element={<Report />} />
+            <Route path="/report/" element={<Report />} />
+            <Route path="/report/:id" element={<ReportDetail />} />
             <Route path="/remove" element={<Remove />} />
             <Route path="/listreport" element={<Listreport />} />
             <Route path="/rating" element={<Rating />} />
@@ -83,7 +84,7 @@ function App() {
           <Route path="/updatecollectorprofile" element={<UpdateCollectorProfile />} />
           <Route path="/collectorprofilepage" element={<CollectorProfilePage />} />
           <Route path="/userreport/:collectorName" element={<UserReport />} />
-          <Route path="/reports-list" element={<ReportsList />} />
+
 
 
 

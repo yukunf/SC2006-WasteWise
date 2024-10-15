@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import Navbar_GeneralUser from "../components/NavBar_GeneralUser";
 import { Link, useParams } from 'react-router-dom';
 
+
+
+
 const UserReport = () => {
     const [rating, setRating] = useState("");  // The reason for reporting
     const [comments, setComments] = useState("");  // The comments field
