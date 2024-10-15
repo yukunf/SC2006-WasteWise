@@ -21,8 +21,15 @@ class UserViewSet(viewsets.ModelViewSet):
     def register(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()  #
+            userCreated = serializer.save()  #
             print(request.data)
+            print(f"The data retrieved is{request.data['role']}")
+
+            profile, created = UserProfile.objects.get_or_create(user=userCreated)
+            profile.role = request.data['role']
+            profile.collector_id = request.data['collector_id']
+            profile.save()
+            print(f"table {profile.role} is created??{created}")
             return Response({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -60,8 +67,17 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['patch'], url_path='update')
     def partial_update_user(self, request, pk=None):
         user = self.get_object()
-        print(user)
+        print(print(f"On testing partial Update: {request.data}"))
         serializer = self.get_serializer(user, data=request.data, partial=True)
+
+        newRole = request.data.get('role')
+        newCollectorID = request.data.get('collector_id')
+        if not newRole is None:
+            user.profile.role = newRole
+            user.profile.save()
+        if not newCollectorID is None:
+            user.profile.collector_id = newCollectorID
+            user.profile.save()
         if serializer.is_valid():
             serializer.save()
             return Response({'message': 'User partially updated successfully'}, status=status.HTTP_200_OK)

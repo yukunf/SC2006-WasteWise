@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 const loginPage = require("../images/loginPage.png")
@@ -10,6 +10,22 @@ const CollectorRegistration = () => {
     const [companies, setCompanies] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [existingCollectorIds, setExistingCollectorIds] = useState([]);
+
+    const [formData, setFormData] = useState({
+        first_name: '',
+        last_name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        collector_company: '',
+        termsAgreed: false,
+        role: 'collector', // Set default role
+        collector_id:-1 
+    });
+
+
+    const navigate = useNavigate();
 
     //just company names from API (for selection of company during reg)
     useEffect(() => {
@@ -32,7 +48,85 @@ const CollectorRegistration = () => {
         fetchCompanies();
     }, []);
 
-    console.log("this", companies)
+    // Fetch existing collector IDs
+    useEffect(() => {
+        const fetchExistingIds = async () => {
+            try {
+                const response = await fetch('http://localhost:8000/api/collectors/'); // Adjust the endpoint as necessary
+                if (response.ok) {
+                    const data = await response.json();
+                    const ids = data.map(collector => collector.collector_id); // Adjust based on your data structure
+                    setExistingCollectorIds(ids);
+                }
+            } catch (error) {
+                console.error('Error fetching existing collector IDs:', error);
+            }
+        };
+
+        fetchExistingIds();
+    }, []);
+
+
+    const handleChange = (e) => {
+        const { name, type, value, checked } = e.target;
+        setFormData({
+            ...formData,
+            [name]: type === 'checkbox' ? checked : value // Handle checkbox separately
+        });
+    };
+
+    // generate a unique collector ID
+    const generateUniqueCollectorId = (existingIds) => {
+        let uniqueId;
+        do {
+            uniqueId = Math.floor(Math.random() * 1000000); 
+        } while (existingIds.includes(uniqueId));
+        return uniqueId;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+    
+        // Additional validation can be added here (e.g., password match check)
+        if (formData.password !== formData.confirmPassword) {
+            alert("Passwords do not match");
+            return;
+        }
+
+        if (!formData.termsAgreed) {
+            alert("You must agree to the terms and conditions");
+            return;
+        }
+
+        const uniqueCollectorId = generateUniqueCollectorId(existingCollectorIds);
+
+        const { termsAgreed, confirmPassword, ...newFormData } = formData;
+        newFormData.collector_id = uniqueCollectorId;
+
+        try {
+            const response = await fetch('http://localhost:8000/api/users/register/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newFormData),
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                console.log('User registered:', data);
+                navigate('/login'); // Redirect to login on successful registration
+            } else {
+                const errorData = await response.json();
+                alert(errorData.error); // Display error message if email already exists
+                console.error('Registration error:', errorData);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    // console.log("this", companies)
     //For loading and if theres error
     // if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;
@@ -44,6 +138,7 @@ const CollectorRegistration = () => {
             </h1>
             <div className="flex justify-end font-poppins text-left">
                 <div className="border-2 rounded-lg shadow-xl mr-20 p-10" style={{ height: '580px', width: '650px' }}>
+                    <form onSubmit={handleSubmit}>
                     <div className="text-base font-semibold -mt-3 flex justify-between gap-4">
                         <h5 className="w-full">
                             First Name
@@ -53,27 +148,48 @@ const CollectorRegistration = () => {
                         </h5>
                     </div>
                     <div className="flex justify-between gap-4">
-                        <input type="first name" className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your first name"/>
-                        <input type="last name" className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your last name"/>
+                        <input name="first_name"
+                                value={formData.first_name}
+                                onChange={handleChange} 
+                                className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your first name"/>
+                        <input name="last_name"
+                                value={formData.last_name}
+                                onChange={handleChange} 
+                                className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your last name"/>
                     </div>
                     <h5 className="text-base font-semibold mt-3">
                         Email
                     </h5>
-                    <input type="email" className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your email address"/>
+                    <input type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your email address"/>
                     <h5 className="text-base font-semibold mt-3">
                         Password
                     </h5>
-                    <input type="password" className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your password"/>
+                    <input type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your password"/>
                     <h5 className="text-base font-semibold mt-3">
                         Re-enter password
                     </h5>
-                    <input type="password" className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your password again"/>
+                    <input type="password"
+                            name="confirmPassword"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                            className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your password again"/>
                     <div> {/* portion for choosing company name. method will change when get the file with updates of companies!!*/}
                         <h5 className="text-base font-semibold mt-4">
                             Select the collector you belong to
                         </h5>
                         <div className="relative">
-                            <select className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none">
+                            <select name="collector_company"
+                                value={formData.collector_company}
+                                onChange={handleChange}
+                                className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none">
                                 <option value="" disabled selected>
                                     <span className="text-gray-400">Please choose a company</span>
                                 </option>
@@ -87,15 +203,19 @@ const CollectorRegistration = () => {
                         </div>
                     </div>
                     <div className="flex items-center mt-4">
-                        <input type="checkbox" id="agree-tnc" className="h-4 w-4 border-2 border-gray-200 text-blue-600 rounded focus:ring-blue-500"/>
+                        <input type="checkbox" id="agree-tnc" 
+                            name="termsAgreed"
+                            checked={formData.termsAgreed}
+                            onChange={handleChange}
+                            className="h-4 w-4 border-2 border-gray-200 text-blue-600 rounded focus:ring-blue-500"/>
                         <label htmlFor="agree-tnc" className="-mt-0.5 ml-2 text-gray-700 text-sm">I’ve read and agree with Terms of Service and our Privacy Policy</label>
                     </div>
                     <div className="flex justify-center mt-5">
-                        <Link to="/" className="bg-[#016A70] hover:bg-teal-800 text-white py-2 px-16 rounded text-base font-semibold">
-                            {/*insert link for home page*/}
+                        <button type="submit"className="bg-[#016A70] hover:bg-teal-800 text-white py-2 px-16 rounded text-base font-semibold">
                             Register
-                        </Link>
+                        </button>
                     </div>
+                    </form>
                     <div className="flex justify-center mt-10">
                         <h6 className="text-sm">
                             <span>Already have an account? </span> 

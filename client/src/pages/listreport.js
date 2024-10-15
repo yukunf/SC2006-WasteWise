@@ -77,4 +77,4 @@ const Listreport = () => {
     );
 };
 
-export default Listreport;
+export default ListReport;

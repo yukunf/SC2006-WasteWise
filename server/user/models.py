@@ -18,20 +18,19 @@ class Role(models.TextChoices):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    role = models.CharField(max_length=10, choices=Role.choices, default=Role.GENERAL, blank=True)
-    collector_id = models.IntegerField(blank=True, null=True)
-
+    role = models.CharField(max_length=10, choices=Role.choices, default=Role.GENERAL, null=True, blank=False)
+    collector_id = models.IntegerField(blank=False, null=True)
 
 # Created the profile, to avoid no objects created
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance)
-
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
+# @receiver(post_save, sender=User)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         UserProfile.objects.get_or_create(user=instance)
+#
+#
+# @receiver(post_save, sender=User)
+# def save_user_profile(sender, instance, **kwargs):
+#     instance.profile.save()
 
 #
 #

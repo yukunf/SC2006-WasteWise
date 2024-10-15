@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Pagination from "./Pagination";
 
 const List = ({filteredData}) => {
-    console.log("this is filtered data", filteredData);
+    // console.log("this is filtered data", filteredData);
     const [currentPage, setCurrentPage] =  useState(1);
     const collectorsPerPage = 4;
     const lastIndex = currentPage * collectorsPerPage;

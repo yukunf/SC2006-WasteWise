@@ -12,26 +12,18 @@ import Activities from './pages/Activities';
 import Login from './pages/Login';
 import GeneralRegistration from './pages/GeneralRegistration';
 import CollectorRegistration from './pages/CollectorRegistration';
-import Search_PublicUser from './pages/Search_PublicUser';
-import SearchByFilters_PublicUser from './pages/SearchByFilter_PublicUser';
-import AfterFilter_PublicUser from './pages/AfterFilter_PublicUser';
-import Display_PublicUser from './pages/Display_PublicUser';
 import Error404 from './pages/Error404';
 import Contact from './pages/Contact';
 
 import Home_GeneralUser from './pages/Home_GeneralUser';
 import Home_Regulator from './pages/Home_Regulator';
 import Home_Collector from './pages/Home_Collector';
-import Search_GeneralUser from './pages/Search_GeneralUser';
-import SearchByFilters_GeneralUser from './pages/SearchByFilter_GeneralUser';
-import AfterFilter_GeneralUser from './pages/AfterFilter_GeneralUser';
-import Display_GeneralUser from './pages/Display_GeneralUser';
 
-import Report from './pages/report';
-import Remove from './pages/remove';
-import Listreport from './pages/listreport';
-import Rating from './pages/rating';
-import UserReport from './pages/userreport';
+import Report from './pages/Report';
+import Remove from './pages/Remove';
+import ListReport from './pages/ListReport';
+import Rating from './pages/Rating';
+import UserReport from './pages/UserReport';
 
 import UpdateGeneralProfile from './pages/UpdateGeneralProfile';
 import GeneralProfilePage from './pages/GeneralProfilePage';
@@ -41,27 +33,37 @@ import CollectorProfilePage from './pages/CollectorProfilePage';
 import UpdateCollectorMainProfile from './pages/UpdateCollectorMainProfile';
 
 import CollectorMainProfile from './pages/CollectorMainProfile';
+import Search from './pages/Search';
+import Display from './pages/Display';
+import GeneralRoute from './components/GeneralRoute';
+import CollectorRoute from './components/CollectorRoute';
+import RegulatorRoute from './components/RegulatorRoute';
+import SearchByFilter from './pages/SearchByFilter';
+import AfterFilter from './pages/AfterFilter';
 
 import ReportDetail from './pages/ReportDetail';
 
 
 
 function App() {
+  // localStorage.clear()
+  console.log("user", localStorage)
+  console.log('Token from localStorage:', localStorage.getItem('token'));
+
   return (
     <div className="App">
       <Router>
         <div>
-          <Routes>
+        <Routes>
             <Route path="/" element={<Home_PublicUser />} />
             <Route path="/visualisations" element={<Visualisations />} />
-            <Route path="/activities" element={<Activities />} />
             <Route path="/login" element={<Login />} />
             <Route path="/general-registration" element={<GeneralRegistration />} />
             <Route path="/collector-registration" element={<CollectorRegistration />} />
-            <Route path="/search-public" element={<Search_PublicUser />} />
-            <Route path="/filter-public" element={<SearchByFilters_PublicUser />} />
-            <Route path="/after-filter-public" element={<AfterFilter_PublicUser />} />
-            <Route path="/display-info-public/:name" element={<Display_PublicUser />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/filter" element={<SearchByFilter />} />
+            <Route path="/afterfilter" element={<AfterFilter />} />
+            <Route path="/display/:name" element={<Display />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/report/" element={<Report />} />
             <Route path="/report/:id" element={<ReportDetail />} />
@@ -87,6 +89,27 @@ function App() {
 
 
 
+
+
+            <Route path="/activities" element={<GeneralRoute element={Activities} />} />
+            <Route path="/Home_GeneralUser" element={<GeneralRoute element={Home_GeneralUser} />} />
+            <Route path="/updategeneralprofile" element={<GeneralRoute element={UpdateGeneralProfile} />} />
+            <Route path="/generalprofilepage" element={<GeneralRoute element={GeneralProfilePage} />} />
+            <Route path="/rating" element={<GeneralRoute element={Rating} />} />
+            <Route path="/userreport/:name" element={<GeneralRoute element={UserReport} />} />
+                
+               
+            <Route path="/Home_Collector" element={<CollectorRoute element={Home_Collector} />} />
+            <Route path="/CollectorMainProfile" element={<CollectorRoute element={CollectorMainProfile} />} />
+            <Route path="/UpdateCollectorMainProfile" element={<CollectorRoute element={UpdateCollectorMainProfile} />} />
+            <Route path="/updatecollectorprofile" element={<CollectorRoute element={UpdateCollectorProfile} />} />
+            <Route path="/collectorprofilepage" element={<CollectorRoute element={CollectorProfilePage} />} />
+
+
+            <Route path="/remove" element={<RegulatorRoute element={Remove} />} />
+            <Route path="/listreport" element={<RegulatorRoute element={ListReport} />} />
+            <Route path="/report" element={<RegulatorRoute element={Report} />} />
+            <Route path="/Home_Regulator" element={<RegulatorRoute element={Home_Regulator} />} />
 
             {/* if user trying to access pages that doesn't exist! */}
             <Route path="*" element={<Error404 />} />

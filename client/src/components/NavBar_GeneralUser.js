@@ -1,11 +1,27 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate} from 'react-router-dom';
 
 const wastewiseLogo = require("../images/logo_master.png");
 
 const Navbar_GeneralUser = ( {collectorName}) => {
     const location = useLocation(); // Get the current location
     console.log('gen', collectorName)
+
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        // remove every info saved from localStorage
+        localStorage.removeItem('token');
+        localStorage.removeItem('user_id'); 
+        localStorage.removeItem('email');
+        localStorage.removeItem('collector_id'); 
+        localStorage.removeItem('role');
+
+        // localStorage.clear();
+    
+        // Redirect to the login page after logging out
+        navigate('/login');
+    };
 
     return (
         <nav
@@ -39,8 +55,8 @@ const Navbar_GeneralUser = ( {collectorName}) => {
                 {/* Search Link */}
                 <li>
                     <Link
-                        to="/Search_GeneralUser"
-                        className={`text-lg font-semibold ${(location.pathname === '/Search_GeneralUser' || location.pathname === '/SearchByFilter_GeneralUser' || location.pathname === '/AfterFilter_GeneralUser' || location.pathname === '/Display_GeneralUser') ? 'text-[#016a70]' : 'text-[#393E46]'} hover:text-[#004f57]`}
+                        to="/search"
+                        className={`text-lg font-semibold ${(location.pathname === '/search' || location.pathname === '/filter' || location.pathname === '/afterfilter' || location.pathname.includes('/display/')) ? 'text-[#016a70]' : 'text-[#393E46]'} hover:text-[#004f57]`}
                     >
                         Search
                     </Link>
@@ -91,6 +107,7 @@ const Navbar_GeneralUser = ( {collectorName}) => {
                     style={{
                         backgroundColor: "#016A70", // Green background color
                     }}
+                    onClick={handleLogout}
                 >
                     Log Out
                 </Link>

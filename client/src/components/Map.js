@@ -398,8 +398,8 @@ const MyMap = ( {data} ) => {
       
     
     const filteredData = data.filter(item => filterByRegion(item));
-    console.log("ORI FILTER", filteredData.length);
-    console.log("ORI data", data.length);
+    // console.log("ORI FILTER", filteredData.length);
+    // console.log("ORI data", data.length);
 
 
     
@@ -428,7 +428,7 @@ const MyMap = ( {data} ) => {
         `).join('<br/><hr style="border: 1px solid grey;"/> <br/>') // combine all company info in the popup
     }));
 
-    console.log(markerData, "wow");
+    // console.log(markerData, "wow");
 
     
     

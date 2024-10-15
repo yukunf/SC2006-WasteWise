@@ -37,9 +37,9 @@ const CollectorProfilePage = () => {
             </div>
         </div>
 
-            <div>
-                <Footer />
-            </div>
+        {/* <div>
+            <Footer />
+        </div> */}
     </div>
 
     )

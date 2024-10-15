@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from "react";
 import { Link, useNavigate, useParams } from 'react-router-dom'; 
-import NavBar_PublicUser from "../components/NavBar_PublicUser"; 
+import Navbar_PublicUser from "../components/NavBar_PublicUser"; 
+import Navbar_GeneralUser from "../components/NavBar_GeneralUser"; 
 
-const Display_PublicUser = () => {
+
+const Display = () => {
     const dummyData = {
         ratings: 4,
         comments: [
@@ -21,6 +23,21 @@ const Display_PublicUser = () => {
     const [companyInfo, setCompanyInfo] = useState(null);
 
     const navigateToPrev = useNavigate();
+
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+    useEffect(() => {
+        // every logged in user will have own token
+        const token = localStorage.getItem('token')
+
+        if (token) {
+            setIsAuthenticated(true)
+        }
+
+        else {
+            setIsAuthenticated(false)
+        }
+    }, [])
 
 
     // First useEffect for fetching data
@@ -57,12 +74,11 @@ const Display_PublicUser = () => {
     if (loading) return <p className='text-center text-gray-600 italic text-lg'>Loading...</p>;
     if (error) return <p className="text-center text-red-600 font-bold text-lg">Error fetching data: {error.message}</p>;
 
-    console.log("chosen company", companyInfo);
+    // console.log("chosen company", companyInfo);
     
     return (
         <div className="w-full h-full">
-            {/* Navbar Component */}
-            <NavBar_PublicUser />
+            {isAuthenticated ? <Navbar_GeneralUser /> : <Navbar_PublicUser />}
 
             {/* Content of your page */}
             <div className="flex flex-col lg:flex-row bg-[#016a70] h-[25vh] relative" style={{ padding: "100px 10% 0" }}>
@@ -96,8 +112,12 @@ const Display_PublicUser = () => {
                             <tr>
                                 <td className="border-b py-2 font-bold">Ratings</td>
                                 <td className="border-b py-2">
-                                    {Array(dummyData.ratings).fill("⭐").join(" ")}{" "}
-                                    {Array(5 - dummyData.ratings).fill("⭐").join(" ")}
+                                    {Array(dummyData.ratings).fill().map((_, index) => (
+                                        <span key={index} className="text-yellow-500 text-2xl">★</span>
+                                    ))}
+                                    {Array(5 - dummyData.ratings).fill().map((_, index) => (
+                                        <span key={index} className="text-gray-300 text-2xl">★</span>
+                                    ))}
                                 </td>
                             </tr>
                             <tr>
@@ -136,7 +156,7 @@ const Display_PublicUser = () => {
     );
 }
 
-export default Display_PublicUser;
+export default Display;
 
 
 

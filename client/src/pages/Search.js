@@ -1,16 +1,32 @@
 import React, {useEffect, useState} from "react";
 import { Link } from 'react-router-dom'; // Make sure this import is here
-import NavBar_PublicUser from "../components/NavBar_PublicUser"; // Import the Navbar
-import NameOrFilter from "../components/NameOrFilter_PublicUser";
+import Navbar_PublicUser from "../components/NavBar_PublicUser"; // Import the Navbar
+import Navbar_GeneralUser from "../components/NavBar_GeneralUser"; // Import the Navbar
+import NameOrFilter from "../components/NameOrFilter";
 import magnifyingGlass from '../images/magnifyingGlass.png';  // Update the path to your icon image
 
-const Search_PublicUser = () => {
+const Search = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [results, setResults] = useState([]);
 
     const [companies, setCompanies] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+    useEffect(() => {
+        // every logged in user will have own token
+        const token = localStorage.getItem('token')
+
+        if (token) {
+            setIsAuthenticated(true)
+        }
+
+        else {
+            setIsAuthenticated(false)
+        }
+    }, [])
 
     useEffect(() => {
         const datasetId = "d_26afdd562f28b4acecb400c10b70f013";
@@ -53,8 +69,7 @@ const Search_PublicUser = () => {
 
     return (
         <div className="w-full h-full">
-            {/* Navbar Component */}
-            <NavBar_PublicUser />
+            {isAuthenticated ? <Navbar_GeneralUser /> : <Navbar_PublicUser />}
 
             {/* Content of your page */}
             <div className="flex flex-col lg:flex-row bg-[#016a70] h-[25vh] relative" style={{ padding: "100px 10% 0" }}>
@@ -117,7 +132,7 @@ const Search_PublicUser = () => {
                         {results.length > 0 ? (
                             results.map((result, index) => (
                                 <div key={index} className="border-b border-gray-300 py-2 px-12">
-                                    <Link to={`/display-info-public/${result.company_name}`}>{result.company_name}</Link>
+                                    <Link to={`/display/${encodeURIComponent(result.company_name)}`}>{result.company_name}</Link>
                                 </div>
                             ))
                         ) : (
@@ -130,4 +145,4 @@ const Search_PublicUser = () => {
     );
 };
 
-export default Search_PublicUser;
+export default Search;

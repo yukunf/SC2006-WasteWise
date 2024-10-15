@@ -16,6 +16,8 @@ const GeneralRegistration = () => {
         role: 'general', // Set default role
         collector_id:-1 // Default Collector ID when it has no meaning
     });
+    const [errorMessage, setErrorMessage] = useState("");
+
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -31,12 +33,12 @@ const GeneralRegistration = () => {
     
         // Additional validation can be added here (e.g., password match check)
         if (formData.password !== formData.confirmPassword) {
-            alert("Passwords do not match");
+            setErrorMessage("Passwords do not match");
             return;
         }
 
         if (!formData.termsAgreed) {
-            alert("You must agree to the terms and conditions");
+            setErrorMessage("You must agree to the terms and conditions");
             return;
         }
 
@@ -57,7 +59,8 @@ const GeneralRegistration = () => {
                 navigate('/login'); // Redirect to login on successful registration
             } else {
                 const errorData = await response.json();
-                alert(errorData.error); // Display error message if email already exists
+                setErrorMessage("Registration failed.", errorData.error); // Set error message for failed login
+                // alert(errorData.error); // Display error message if email already exists
                 console.error('Registration error:', errorData);
             }
         } catch (error) {
@@ -134,6 +137,7 @@ const GeneralRegistration = () => {
                                 Register
                             </button>
                         </div>
+                        {errorMessage && <div className="text-red-500 mt-2 text-center">{errorMessage}</div>} {/* Display error message */}
                     </form>
                     <div className="flex justify-center mt-10">
                         <h6 className="text-sm">

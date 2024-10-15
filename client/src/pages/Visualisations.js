@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import MyMap from "../components/Map";
 import Footer from "../components/Footer";
 import Navbar_PublicUser from "../components/NavBar_PublicUser";
+import Navbar_GeneralUser from "../components/NavBar_GeneralUser";
 
 const femaleIcon = require("../images/femaleIcon.png")
 
@@ -9,6 +10,21 @@ const Visualisations = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+    useEffect(() => {
+        // every logged in user will have own token
+        const token = localStorage.getItem('token')
+
+        if (token) {
+            setIsAuthenticated(true)
+        }
+
+        else {
+            setIsAuthenticated(false)
+        }
+    }, [])
 
     useEffect(() => {
         const datasetId = "d_26afdd562f28b4acecb400c10b70f013";
@@ -33,11 +49,12 @@ const Visualisations = () => {
 
         // if (loading) return <p className='text-center text-gray-600 italic text-lg'>Loading...</p>;
         if (error) return <p className="text-center text-red-600 font-bold text-lg">Error fetching data: {error.message}</p>;
-        console.log("hello my data", data);
+        // console.log("hello my data", data);
 
     return (
         <div className="w-screen lg:w-full h-full">
-        <Navbar_PublicUser />
+        
+        {isAuthenticated ? <Navbar_GeneralUser /> : <Navbar_PublicUser />}
         <div className="flex flex-col lg:flex-row bg-[#016a70]" style={{paddingLeft:"10%",paddingRight:"10%",paddingTop:"50px"}}>
             <div className="flex-initial flex justify-center items-center p-[130px]">
                 <img src={femaleIcon} className="lg:mr-[150px]"></img>
