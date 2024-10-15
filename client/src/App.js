@@ -43,6 +43,10 @@ import PrivateRoute from './components/PrivateRoute';
 
 
 function App() {
+
+  const role = localStorage.getItem('role')
+  console.log("this my role", role)
+
   return (
     <div className="App">
       <Router>
@@ -59,29 +63,38 @@ function App() {
             <Route path="/display/:name" element={<Display />} />
             <Route path="/contact" element={<Contact />} />
 
-            <Route path="/activities" element={<PrivateRoute element={Activities} />} />
+            {role === 'general' &&
+                <>
+                <Route path="/activities" element={<PrivateRoute element={Activities} />} />
+                <Route path="/Home_GeneralUser" element={<PrivateRoute element={Home_GeneralUser} />} />
+                <Route path="/SearchByFilter_GeneralUser" element={<PrivateRoute element={SearchByFilters_GeneralUser} />} />
+                <Route path="/AfterFilter_GeneralUser" element={<PrivateRoute element={AfterFilter_GeneralUser} />} />
+                <Route path="/updategeneralprofile" element={<PrivateRoute element={UpdateGeneralProfile} />} />
+                <Route path="/generalprofilepage" element={<PrivateRoute element={GeneralProfilePage} />} />
+                <Route path="/rating" element={<PrivateRoute element={Rating} />} />
+                <Route path="/userreport/:name" element={<PrivateRoute element={UserReport} />} />
+                
+                </>
+            }
 
+            {role === 'collector' &&
+                <>
+                  <Route path="/Home_Collector" element={<PrivateRoute element={Home_Collector} />} />
+                  <Route path="/CollectorMainProfile" element={<PrivateRoute element={CollectorMainProfile} />} />
+                  <Route path="/UpdateCollectorMainProfile" element={<PrivateRoute element={UpdateCollectorMainProfile} />} />
+                  <Route path="/updatecollectorprofile" element={<PrivateRoute element={UpdateCollectorProfile} />} />
+                  <Route path="/collectorprofilepage" element={<PrivateRoute element={CollectorProfilePage} />} />
+                </>
+            }
 
-            <Route path="/report" element={<PrivateRoute element={Report} />} />
-            <Route path="/remove" element={<PrivateRoute element={Remove} />} />
-            <Route path="/listreport" element={<PrivateRoute element={ListReport} />} />
-            <Route path="/rating" element={<PrivateRoute element={Rating} />} />
-            <Route path="/userreport" element={<PrivateRoute element={UserReport} />} />
-
-            <Route path="/CollectorMainProfile" element={<PrivateRoute element={CollectorMainProfile} />} />
-            <Route path="/UpdateCollectorMainProfile" element={<PrivateRoute element={UpdateCollectorMainProfile} />} />            
-
-            <Route path="/Home_GeneralUser" element={<PrivateRoute element={Home_GeneralUser} />} />
-            <Route path="/Home_Regulator" element={<PrivateRoute element={Home_Regulator} />} />
-            <Route path="/Home_Collector" element={<PrivateRoute element={Home_Collector} />} />
-            <Route path="/SearchByFilter_GeneralUser" element={<PrivateRoute element={SearchByFilters_GeneralUser} />} />
-            <Route path="/AfterFilter_GeneralUser" element={<PrivateRoute element={AfterFilter_GeneralUser} />} />
-
-            <Route path="/updategeneralprofile" element={<PrivateRoute element={UpdateGeneralProfile} />} />
-            <Route path="/generalprofilepage" element={<PrivateRoute element={GeneralProfilePage} />} />
-            <Route path="/updatecollectorprofile" element={<PrivateRoute element={UpdateCollectorProfile} />} />
-            <Route path="/collectorprofilepage" element={<PrivateRoute element={CollectorProfilePage} />} />
-
+            {role === 'regulator' &&
+                <>
+                  <Route path="/remove" element={<PrivateRoute element={Remove} />} />
+                  <Route path="/listreport" element={<PrivateRoute element={ListReport} />} />
+                  <Route path="/report" element={<PrivateRoute element={Report} />} />
+                  <Route path="/Home_Regulator" element={<PrivateRoute element={Home_Regulator} />} />
+                </>
+            }
             {/* if user trying to access pages that doesn't exist! */}
             <Route path="*" element={<Error404 />} />
           </Routes>
