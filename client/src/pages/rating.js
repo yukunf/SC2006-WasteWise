@@ -7,16 +7,18 @@ const Rating = () => {
     const [companies, setCompanies] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [collectorId, setCollectorId] = useState(null); // Initially set as null
+    const [collectorId, setCollectorId] = useState(""); // Store the collector ID
 
+    const getCSRFToken = () => {
+        return document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
+    };
+    
     const handleStarClick = (index) => {
         setRating(index);
     };
 
     const handleSelectChange = (event) => {
-        // Parse the value as an integer and set it as the collector ID
-        const value = event.target.value;
-        setCollectorId(value ? parseInt(value) : null);
+        setCollectorId(event.target.value);
     };
 
     // Fetch company names and IDs from API
@@ -29,7 +31,7 @@ const Rating = () => {
                 }
                 const json = await response.json();
                 const companyData = json.result.records.map(record => ({
-                    id: record.company_id,  // Assuming company_id is an integer in the API
+                    id: record.company_id,  // Replace with the actual ID key from your API
                     name: record.company_name
                 }));
                 setCompanies(companyData);
@@ -42,71 +44,47 @@ const Rating = () => {
 
         fetchCompanies();
     }, []);
-
     const handleSubmit = async () => {
-        const comments = document.querySelector('textarea').value.trim(); // Get and trim the value from the textarea
-
-        // Assuming you have the user ID stored in localStorage or somewhere accessible
-        const userId = localStorage.getItem('user_id'); // Make sure this matches how you store user ID
-
-        // Debugging logs to verify values
-        console.log("Rating:", rating);
-        console.log("Comments:", comments);
-        console.log("Collector ID:", collectorId);
-        console.log("User ID:", userId);
-
-        // Validate each value explicitly
-        if (rating === 0) {
-            alert("Please provide a rating.");
+        const comments = document.querySelector('textarea').value;
+    
+        if (!rating || !comments || !collectorId) {
+            alert("Please provide a rating, comments, and select a collector.");
             return;
         }
-
-        if (!comments) {
-            alert("Please provide comments.");
-            return;
-        }
-
-        if (!collectorId || isNaN(collectorId)) {
-            alert("Please select a valid collector.");
-            return;
-        }
-
-        if (!userId) {
-            alert("User ID is missing. Please log in again.");
-            return;
-        }
-
+    
         const ratingData = {
-            collectorID: collectorId,  // Ensure this is an integer
+            collector_id: collectorId,
             rating: rating,
-            comment: comments,         
-            user: parseInt(userId),    // Include the user ID as an integer
+            comments: comments,
         };
-
+    
         try {
             const response = await fetch('http://localhost:8000/api/ratings/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Token ' + localStorage.getItem('token'), // Add your token here
+                    'X-CSRFToken': getCSRFToken(),
                 },
+                credentials: 'include',  // This ensures cookies (session) are included in the request
                 body: JSON.stringify(ratingData),
             });
-
-            console.log("Response status:", response.status); // Debugging log
-
+    
             if (!response.ok) {
                 const errorData = await response.json();
+                console.error('Error Status:', response.status);
                 console.error('Error Details:', errorData);
-                alert('An error occurred: ' + (errorData.detail || errorData.message || JSON.stringify(errorData)));
+                alert('An error occurred: ' + (errorData.detail || errorData.message));
             } else {
                 alert('Rating submitted successfully!');
             }
         } catch (error) {
-            console.error('Fetch error:', error);
-            alert('An error occurred while submitting the rating: ' + error.message);
+            console.error('Error:', error);
+            alert('An error occurred while submitting the rating.');
         }
     };
+    
+    
+    
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;
@@ -121,7 +99,7 @@ const Rating = () => {
                     <div className="relative">
                         <select
                             className="text-sm w-full p-1.5 mt-1 focus:outline-none"
-                            value={collectorId || ""}
+                            value={collectorId}
                             onChange={handleSelectChange}
                         >
                             <option value="" disabled>

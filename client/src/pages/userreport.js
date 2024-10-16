@@ -2,9 +2,6 @@ import React, { useState } from "react";
 import Navbar_GeneralUser from "../components/NavBar_GeneralUser";
 import { Link, useParams } from 'react-router-dom';
 
-
-
-
 const UserReport = () => {
     const [rating, setRating] = useState("");  // The reason for reporting
     const [comments, setComments] = useState("");  // The comments field
@@ -17,6 +14,16 @@ const UserReport = () => {
     const handleCommentsChange = (event) => {
         setComments(event.target.value);
     };
+
+    // Function to get the CSRF token from cookies
+    const getCSRFToken = () => {
+        const csrfToken = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken'))
+            ?.split('=')[1];
+        return csrfToken;
+    };
+
     const handleSubmit = async () => {
         if (!rating || !comments) {
             alert("Please provide a reason and comments for the report.");
@@ -30,13 +37,13 @@ const UserReport = () => {
         };
     
         try {
-            const response = await fetch('http://localhost:8000/api/reports/', {  // Adjust the URL as needed
-
+            const response = await fetch('http://localhost:8000/api/reports/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    //Authorization': 'Token ' + your_token_here,  // If using token-based authentication, include the token
+                    'X-CSRFToken': getCSRFToken(),  // Include CSRF token here
                 },
+                credentials: 'include',  // Include credentials (cookies) with the request
                 body: JSON.stringify(reportData),
             });
     
@@ -53,8 +60,6 @@ const UserReport = () => {
             alert('An error occurred while submitting the report.');
         }
     };
-    
-    
 
     return (
         <div className="w-full h-full">
@@ -66,7 +71,12 @@ const UserReport = () => {
                     <p>{collectorName}</p>
                 </div>
                 <p className="text-lg text-bold text-left pl-20 mt-12">Reason</p>
-                <select className="w-[42%] p-2 border border-grey-300 rounded mb-4 mt-2" style={{ marginLeft: '-52%' }} value={rating} onChange={handleRatingChange}>
+                <select
+                    className="w-[42%] p-2 border border-grey-300 rounded mb-4 mt-2"
+                    style={{ marginLeft: '-52%' }}
+                    value={rating}
+                    onChange={handleRatingChange}
+                >
                     <option value="" disabled>Select reason</option>
                     <option value="Poor service">Poor service</option>
                     <option value="Bad communication">Bad communication</option>

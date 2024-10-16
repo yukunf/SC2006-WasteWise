@@ -9,7 +9,7 @@ User = get_user_model()
 class RatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ratings
-        fields = ['collectorID', 'rating', 'comment', 'user', 'created_at']
+        fields = ['collector_id', 'rating', 'comments', 'user', 'created_at']
         read_only_fields = ['created_at', 'user']
     
     def create(self, validated_data):

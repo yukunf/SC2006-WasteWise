@@ -4,9 +4,9 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class Ratings(models.Model):
-    collectorID = models.IntegerField()
+    collector_id = models.CharField(max_length=255)
     rating = models.IntegerField()
-    comment = models.TextField()
+    comments = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     created_at = models.DateTimeField(auto_now_add=True)
 
