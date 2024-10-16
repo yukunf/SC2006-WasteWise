@@ -19,11 +19,12 @@ import Home_GeneralUser from './pages/Home_GeneralUser';
 import Home_Regulator from './pages/Home_Regulator';
 import Home_Collector from './pages/Home_Collector';
 
-import Report from './pages/Report';
-import Remove from './pages/Remove';
-import ListReport from './pages/ListReport';
-import Rating from './pages/Rating';
-import UserReport from './pages/UserReport';
+import Report from './pages/report';
+import Remove from './pages/remove';
+import ListReport from './pages/listreport';
+import Rating from './pages/rating';
+import UserReport from './pages/userreport';
+import ReportDetail from './pages/ReportDetail';
 
 import UpdateGeneralProfile from './pages/UpdateGeneralProfile';
 import GeneralProfilePage from './pages/GeneralProfilePage';
@@ -40,9 +41,6 @@ import CollectorRoute from './components/CollectorRoute';
 import RegulatorRoute from './components/RegulatorRoute';
 import SearchByFilter from './pages/SearchByFilter';
 import AfterFilter from './pages/AfterFilter';
-
-import ReportDetail from './pages/ReportDetail';
-
 
 
 function App() {
@@ -65,30 +63,6 @@ function App() {
             <Route path="/afterfilter" element={<AfterFilter />} />
             <Route path="/display/:name" element={<Display />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/report/" element={<Report />} />
-            <Route path="/report/:id" element={<ReportDetail />} />
-            <Route path="/remove" element={<Remove />} />
-            <Route path="/listreport" element={<Listreport />} />
-            <Route path="/rating" element={<Rating />} />
-            <Route path="/CollectorMainProfile" element={<CollectorMainProfile />} />
-            <Route path="/UpdateCollectorMainProfile" element={<UpdateCollectorMainProfile />} />            
-          
-          <Route path="/Home_GeneralUser" element={<Home_GeneralUser />} />
-          <Route path="/Home_Regulator" element={<Home_Regulator />} />
-          <Route path="/Home_Collector" element={<Home_Collector />} />
-          <Route path="/Search_GeneralUser" element={<Search_GeneralUser />} />
-          <Route path="/SearchByFilter_GeneralUser" element={<SearchByFilters_GeneralUser />} />
-          <Route path="/AfterFilter_GeneralUser" element={<AfterFilter_GeneralUser />} />
-          <Route path="/Display_GeneralUser" element={<Display_GeneralUser />} />
-
-          <Route path="/updategeneralprofile" element={<UpdateGeneralProfile />} />
-          <Route path="/generalprofilepage" element={<GeneralProfilePage />} />
-          <Route path="/updatecollectorprofile" element={<UpdateCollectorProfile />} />
-          <Route path="/collectorprofilepage" element={<CollectorProfilePage />} />
-          <Route path="/userreport/:collectorName" element={<UserReport />} />
-
-
-
 
 
             <Route path="/activities" element={<GeneralRoute element={Activities} />} />
@@ -96,7 +70,7 @@ function App() {
             <Route path="/updategeneralprofile" element={<GeneralRoute element={UpdateGeneralProfile} />} />
             <Route path="/generalprofilepage" element={<GeneralRoute element={GeneralProfilePage} />} />
             <Route path="/rating" element={<GeneralRoute element={Rating} />} />
-            <Route path="/userreport/:name" element={<GeneralRoute element={UserReport} />} />
+            <Route path="/userreport/:collectorName" element={<GeneralRoute element={UserReport} />} />
                 
                
             <Route path="/Home_Collector" element={<CollectorRoute element={Home_Collector} />} />
@@ -110,7 +84,8 @@ function App() {
             <Route path="/listreport" element={<RegulatorRoute element={ListReport} />} />
             <Route path="/report" element={<RegulatorRoute element={Report} />} />
             <Route path="/Home_Regulator" element={<RegulatorRoute element={Home_Regulator} />} />
-
+            <Route path="/report/:id" element={<ReportDetail />} />  
+            
             {/* if user trying to access pages that doesn't exist! */}
             <Route path="*" element={<Error404 />} />
           </Routes>
