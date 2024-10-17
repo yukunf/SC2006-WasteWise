@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     #'user',
     'rating',
-    # 'collector',
+    #'collector',
     'corsheaders',
     'user.apps.UserConfig',
     'rest_framework',
