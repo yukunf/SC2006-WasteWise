@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar_GeneralUser from "../components/NavBar_GeneralUser";
 import {Link} from 'react-router-dom'
 import { useParams } from 'react-router-dom';
@@ -6,13 +6,50 @@ import { useParams } from 'react-router-dom';
 
 const UserReport = () => {
     const [rating, setRating] = useState("");
+    const [collector, setCollector] = useState([])
+    const [collectorName, setCollectorName] = useState("")
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
 
     const handleRatingChange = (event) => {
         setRating(event.target.value);
     };
 
-    const { collectorName } = useParams();
-    console.log("colo", collectorName)
+    const { id } = useParams();
+
+    
+
+    useEffect(() => {
+        const datasetId = "d_26afdd562f28b4acecb400c10b70f013";
+        const url = `https://data.gov.sg/api/action/datastore_search?resource_id=${datasetId}&limit=314`;
+
+        fetch(url)
+            .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch data');
+            }
+            return response.json();
+            })
+            .then(companies => {
+                setCollector(companies.result.records);
+                setLoading(false);
+            })
+            .catch(error => {
+                setError(error);
+                setLoading(false);
+            });
+        }, []);
+
+    // console.log("col", collector)
+
+    useEffect(() => {
+        if (id && collector.length > 0) {
+            const chosenCompany = collector.find((c) => c._id === parseInt(id, 10));
+            setCollectorName(chosenCompany ? chosenCompany.company_name : null); // Handle company not found
+        }
+    }, [id, collector]); 
+
 
     return (
         <div className="w-full h-full">

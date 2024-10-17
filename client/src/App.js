@@ -69,7 +69,7 @@ function App() {
             <Route path="/updategeneralprofile" element={<GeneralRoute element={UpdateGeneralProfile} />} />
             <Route path="/generalprofilepage" element={<GeneralRoute element={GeneralProfilePage} />} />
             <Route path="/rating" element={<GeneralRoute element={Rating} />} />
-            <Route path="/userreport/:name" element={<GeneralRoute element={UserReport} />} />
+            <Route path="/userreport/:id" element={<GeneralRoute element={UserReport} />} />
                 
                
             <Route path="/Home_Collector" element={<CollectorRoute element={Home_Collector} />} />
