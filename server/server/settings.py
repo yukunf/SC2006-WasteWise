@@ -31,10 +31,11 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     #'user',
-    'rating',
-    'collector',
+    # 'rating',
+    # 'collector',
     'corsheaders',
     'user.apps.UserConfig',
+    'rating.apps.RatingConfig',
     'rest_framework',
     'rest_framework.authtoken',
     'django.contrib.admin',
@@ -141,3 +142,19 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Your React frontend URL
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',  # Replace with your frontend's address
+    "http://localhost:8000",
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',  # If you're using TokenAuthentication
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
