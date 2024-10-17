@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom'; // Make sure this import is here
 import Footer from "../components/Footer";
 import NavBar_Collector from "../components/NavBar_Collector"; // Import the Navbar
@@ -8,6 +8,39 @@ const ellipse = require("../images/ellipse.png");
 
 
 const Home_Collector = () => {
+    const [fullName, setFullName] = useState(null);
+    const [error, setError] = useState(null);
+
+
+    useEffect(() => {
+        const fetchUserDetails = async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/api/users/${localStorage.getItem('user_id')}/`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Token ${localStorage.getItem('token')}`, // Include the token for authentication
+                        'Content-Type': 'application/json',
+                    },
+                });
+        
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('User details:', data);
+                    setFullName(`${data.first_name} ${data.last_name}`);
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.error); // Display error message if retrieval fails
+                    console.error('Retrieval error:', errorData);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        fetchUserDetails();
+
+    }, []);
+
     return (
         <div className="w-full h-full">
             {/* Navbar Component */}
@@ -18,7 +51,7 @@ const Home_Collector = () => {
                 <div className="flex-initial flex flex-col w-full lg:w-1/2 pt-4 ssm:pt-0 mt-[100px]">
                     <h3 className="w-full lg:w-[656px] text-white text-[28px] font-semibold font-poppins">Hi!</h3>
                     <h2 className="w-full lg:w-[656px] text-[#ffffdd] text-5xl font-bold font-poppins mt-2">
-                    Welcome, ABC Collector!
+                    Welcome, {fullName}!
                     </h2>
                     <p className="w-full lg:w-[654px] h-auto text-white text-base font-normal font-poppins mt-4">
                         Empowering communities with efficient waste management solutions.

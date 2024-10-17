@@ -36,8 +36,12 @@ const CollectorRegistration = () => {
                     throw new Error('Network response was not ok');
                 }
                 const json = await response.json();
-                const companyNames = json.result.records.map(record => record.company_name); // Adjust the key based on the actual data structure
-                setCompanies(companyNames);
+                // const companyNames = json.result.records.map(record => record.company_name); // Adjust the key based on the actual data structure
+                const companyDetails = json.result.records.map(record => ({
+                    id: record._id, // Assuming the ID is included
+                    name: record.company_name,
+                }));
+                setCompanies(companyDetails);
             } catch (err) {
                 setError(err);
             } finally {
@@ -49,22 +53,22 @@ const CollectorRegistration = () => {
     }, []);
 
     // Fetch existing collector IDs
-    useEffect(() => {
-        const fetchExistingIds = async () => {
-            try {
-                const response = await fetch('http://localhost:8000/api/collectors/'); // Adjust the endpoint as necessary
-                if (response.ok) {
-                    const data = await response.json();
-                    const ids = data.map(collector => collector.collector_id); // Adjust based on your data structure
-                    setExistingCollectorIds(ids);
-                }
-            } catch (error) {
-                console.error('Error fetching existing collector IDs:', error);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchExistingIds = async () => {
+    //         try {
+    //             const response = await fetch('http://localhost:8000/api/collectors/'); // Adjust the endpoint as necessary
+    //             if (response.ok) {
+    //                 const data = await response.json();
+    //                 const ids = data.map(collector => collector.collector_id); // Adjust based on your data structure
+    //                 setExistingCollectorIds(ids);
+    //             }
+    //         } catch (error) {
+    //             console.error('Error fetching existing collector IDs:', error);
+    //         }
+    //     };
 
-        fetchExistingIds();
-    }, []);
+    //     fetchExistingIds();
+    // }, []);
 
 
     const handleChange = (e) => {
@@ -76,13 +80,13 @@ const CollectorRegistration = () => {
     };
 
     // generate a unique collector ID
-    const generateUniqueCollectorId = (existingIds) => {
-        let uniqueId;
-        do {
-            uniqueId = Math.floor(Math.random() * 1000000); 
-        } while (existingIds.includes(uniqueId));
-        return uniqueId;
-    };
+    // const generateUniqueCollectorId = (existingIds) => {
+    //     let uniqueId;
+    //     do {
+    //         uniqueId = Math.floor(Math.random() * 1000000); 
+    //     } while (existingIds.includes(uniqueId));
+    //     return uniqueId;
+    // };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -98,7 +102,10 @@ const CollectorRegistration = () => {
             return;
         }
 
-        const uniqueCollectorId = generateUniqueCollectorId(existingCollectorIds);
+        // const uniqueCollectorId = generateUniqueCollectorId(existingCollectorIds);
+        const selectedCompany = companies.find(company => company.name === formData.collector_company);
+        console.log("s", selectedCompany, "id:", selectedCompany.id)
+        const uniqueCollectorId = selectedCompany ? selectedCompany.id : -1;
 
         const { termsAgreed, confirmPassword, ...newFormData } = formData;
         newFormData.collector_id = uniqueCollectorId;
@@ -195,8 +202,8 @@ const CollectorRegistration = () => {
                                 </option>
                                 {/* create options of companies */}
                                 {companies.map((company, index) => (
-                                    <option key={index} value={company}>
-                                        {company}
+                                    <option key={index} value={company.name}>
+                                        {company.name}
                                     </option>
                                 ))}
                             </select>
