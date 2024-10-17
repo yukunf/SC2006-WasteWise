@@ -1,3 +1,4 @@
 venv
 server/server/__pycache__
 server/user/migrations/__pycache__
+server/db.sqlite3
