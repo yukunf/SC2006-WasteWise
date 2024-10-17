@@ -56,7 +56,9 @@ const Rating = () => {
         const ratingData = {
             collectorID: collectorId,
             rating: rating,
-            comment: comments,
+            comments: comments,
+            userID: localStorage.getItem('user_id'),
+            created_at: new Date().toISOString()
         };
     
         try {
@@ -65,6 +67,7 @@ const Rating = () => {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCSRFToken(),
+                    'Authorization': `Token ${localStorage.getItem('token')}`, // Include the token for authentication
                 },
                 credentials: 'include',  // This ensures cookies (session) are included in the request
                 body: JSON.stringify(ratingData),

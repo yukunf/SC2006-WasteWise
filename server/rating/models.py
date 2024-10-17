@@ -2,17 +2,18 @@ from django.db import models
 
 # Create your models here.
 
-class Rating(models.Model):
+class Ratings(models.Model):
     collectorID = models.IntegerField()
     rating = models.IntegerField()
-    comment = models.TextField()
-    userID = models.TextField()
+    comments = models.TextField()
+    userID = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Rating by {self.userID} with value {self.rating}"
 
 class Total_Rating(models.Model):
-    ratings = models.ManyToManyField(Rating)
+    ratings = models.ManyToManyField(Ratings)
     average_rating = models.FloatField(default=0.0)
 
     def calculate_average_rating(self):

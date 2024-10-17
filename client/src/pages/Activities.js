@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import Navbar_GeneralUser from "../components/NavBar_GeneralUser";
 
 const Activities = () => {
 
-    const data = [
+    const reportArray = [
         {
             serial_no : 1,
             activity_type : "Reporting Collector",
@@ -16,26 +16,26 @@ const Activities = () => {
                           16:21PM",
             remarks : "Contacted"
         },
-        {
-            serial_no : 2,
-            activity_type : "Rating Collector",
-            content : "Rated 800 SUPER WASTE MGMT PTE LTD",
-            rating: 4,
-            comments: "Good service, hassle-free!!",
-            datetime : "28 August 2024 \
-                          13:43PM",
-            remarks : "NIL"
-        },
-        {
-            serial_no : 3,
-            activity_type : "Rating Collector",
-            content : "Rated AEON EARTH PTE LTD",
-            rating: 3,
-            comments: "Did the work as commissioned, however, the process could have been smoother if they were a little less rude :(",
-            datetime : "31 August 2024 \
-                          10:11AM",
-            remarks : "NIL"
-        },
+        // {
+        //     serial_no : 2,
+        //     activity_type : "Rating Collector",
+        //     content : "Rated 800 SUPER WASTE MGMT PTE LTD",
+        //     rating: 4,
+        //     comments: "Good service, hassle-free!!",
+        //     datetime : "28 August 2024 \
+        //                   13:43PM",
+        //     remarks : "NIL"
+        // },
+        // {
+        //     serial_no : 3,
+        //     activity_type : "Rating Collector",
+        //     content : "Rated AEON EARTH PTE LTD",
+        //     rating: 3,
+        //     comments: "Did the work as commissioned, however, the process could have been smoother if they were a little less rude :(",
+        //     datetime : "31 August 2024 \
+        //                   10:11AM",
+        //     remarks : "NIL"
+        // },
         {
             serial_no : 4,
             activity_type : "Reporting Collector",
@@ -46,19 +46,152 @@ const Activities = () => {
                           20:21PM",
             remarks : "Not Contacted"
         },
-        {
-            serial_no : 5,
-            activity_type : "Rating Collector",
-            content : "Rated CP",
-            rating: 0,
-            comments : "You just want attention. \
-                      I knew from the start, \
-                      you're just making sure I'm never gettin' over you :((",
-            datetime : "30 September 2024 \
-                          19:37PM",
-            remarks : "NIL"
-        },
+        // {
+        //     serial_no : 5,
+        //     activity_type : "Rating Collector",
+        //     content : "Rated CP",
+        //     rating: 0,
+        //     comments : "You just want attention. \
+        //               I knew from the start, \
+        //               you're just making sure I'm never gettin' over you :((",
+        //     datetime : "30 September 2024 \
+        //                   19:37PM",
+        //     remarks : "NIL"
+        // },
     ]
+
+    
+
+    const [ratingData, setRatingData] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [companies, setCompanies] = useState([]);
+    const [data, setData] = useState([]); // Use state to hold combined data
+
+
+    const getCSRFToken = () => {
+        return document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
+    };
+
+    useEffect(() => {
+        const fetchRating = async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/api/ratings/${localStorage.getItem('user_id')}`, {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken(),
+                        'Authorization': `Token ${localStorage.getItem('token')}`, // Include the token for authentication
+                        'Content-Type': 'application/json',
+                    },
+                });
+        
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('rating details:', data);
+                    setRatingData(data)
+                    // setFullName(`${data.first_name} ${data.last_name}`);
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.error); // Display error message if retrieval fails
+                    console.error('Retrieval error:', errorData);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        fetchRating();
+
+    }, []);
+
+    useEffect(() => {
+        const fetchCompanies = async () => {
+            try {
+                const response = await fetch('https://data.gov.sg/api/action/datastore_search?resource_id=d_26afdd562f28b4acecb400c10b70f013&limit=314');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const json = await response.json();
+                // const companyNames = json.result.records.map(record => record.company_name); // Adjust the key based on the actual data structure
+                const companyDetails = json.result.records.map(record => ({
+                    id: record._id, // Assuming the ID is included
+                    name: record.company_name,
+                }));
+                setCompanies(companyDetails);
+            } catch (err) {
+                setError(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCompanies();
+    }, []);    
+
+    console.log("rating", ratingData)
+
+    // const data = []
+
+    // if (!ratingData) {
+    //     for (let i = 0; i < ratingData.length; i++) {
+    //         const rating = ratingData[i];
+    
+    //         // Find the selected company based on the collectorID
+    //         const selectedCompany = companies.find(company => company.id === rating.collectorID);
+    
+    //         // Prepare the content string
+    //         const companyName = selectedCompany ? selectedCompany.name : "Unknown Company"; // Adjust this line based on your company structure
+    
+    //         // Create the activity object for the rating
+    //         const activity = {
+    //             serial_no: rating.id, // serial_no based on current length
+    //             activity_type: "Rating Collector",
+    //             content: `Rated ${companyName} (Collector ID: ${rating.collectorID})`, // Updated content with company name
+    //             rating: rating.rating,
+    //             comments: rating.comments,
+    //             datetime: new Date(rating.created_at).toLocaleString(), // Format the date
+    //             remarks: "NIL" // Default remarks if needed
+    //         };
+    
+    //         // Push the activity into combinedData
+    //         data.push(activity);
+    //     }
+    // }
+
+    // Combine rating data and reporting activities
+    useEffect(() => {
+        if (ratingData && companies.length > 0) {
+            const combinedData = [];
+
+            // Include reporting activities
+            reportArray.forEach(activity => {
+                combinedData.push(activity);
+            });
+
+            // Include rating activities
+            for (let i = 0; i < ratingData.length; i++) {
+                const rating = ratingData[i];
+
+                const selectedCompany = companies.find(company => company.id === rating.collectorID);
+                const companyName = selectedCompany ? selectedCompany.name : "Unknown Company";
+
+                const activity = {
+                    serial_no: i+1,
+                    activity_type: "Rating Collector",
+                    content: `Rated ${companyName} (Collector ID: ${rating.collectorID})`,
+                    rating: rating.rating,
+                    comments: rating.comments,
+                    datetime: new Date(rating.created_at).toLocaleString(),
+                    remarks: "NIL"
+                };
+
+                combinedData.push(activity);
+            }
+
+            setData(combinedData);
+        }
+    }, [ratingData, companies]);
+    
 
     const [currentPage, setCurrentPage] =  useState(1);
     const activitiesPerPage = 4;
