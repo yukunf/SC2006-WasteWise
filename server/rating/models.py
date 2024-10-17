@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 
 class Rating(models.Model):
@@ -10,6 +11,7 @@ class Rating(models.Model):
 
     def __str__(self):
         return f"Rating by {self.userID} with value {self.rating}"
+
 
 class Total_Rating(models.Model):
     ratings = models.ManyToManyField(Rating)

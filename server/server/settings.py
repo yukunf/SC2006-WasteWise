@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'user',
     'rest_framework',
     'rating',
+    'collector',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

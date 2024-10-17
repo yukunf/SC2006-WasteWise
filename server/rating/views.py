@@ -6,14 +6,14 @@ from django.shortcuts import render, redirect
 from .forms import RatingForm
 from .models import Rating
 
+
 def submit_rating_view(request):
     if request.method == 'POST':
         form = RatingForm(request.POST)
         if form.is_valid():
-
             comment = form.cleaned_data['comment']
             rating_value = form.cleaned_data['rating']
-            
+
             # Save the rating in the database (assuming you have a userID from request.user)
             rating = Rating.objects.create(
                 comment=comment,
