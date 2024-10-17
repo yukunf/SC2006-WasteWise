@@ -16,18 +16,16 @@ def update_collectors_from_source(modeladmin, request, queryset):
         print(f"Getting data: {data['success']}")
 
         if response.status_code == 200 and data['success'] is True:
-            # 提取 'result' 部分
             result_data = data['result']
-            # 遍历 'records'，即每个公司的数据
             for item in result_data['records']:
                 # Update or Create Collector
                 Collector.objects.update_or_create(
-                    name=item['company_name'],  # 公司名称
+                    name=item['company_name'],
                     defaults={
-                        'address': item['company_address'],  # 公司地址
-                        'phone': '' if item['telephone_no'] == 'na' else item['telephone_no'],  # 电话
-                        'fax': '' if item['fax_no'] == 'na' else item['fax_no'],  # 传真
-                        'licences': item['class_of_licence'],  # 许可证类别 (改为正确字段 'class_of_licence')
+                        'address': item['company_address'],
+                        'phone': '' if item['telephone_no'] == 'na' else item['telephone_no'],
+                        'fax': '' if item['fax_no'] == 'na' else item['fax_no'],
+                        'licences': item['class_of_licence'],
                     }
                 )
             modeladmin.message_user(request, "Collectors are now up to date")
