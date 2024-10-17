@@ -1,2 +1,3 @@
 venv
 server/server/__pycache__
+server/user/migrations/__pycache__
