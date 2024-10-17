@@ -11,8 +11,8 @@ const UserReport = () => {
         setRating(event.target.value);
     };
 
-    const { collectorName } = useParams();
-    console.log("colo", collectorName)
+    const { name } = useParams();
+    const collectorName = decodeURIComponent(name);
 
     return (
         <div className="w-full h-full">

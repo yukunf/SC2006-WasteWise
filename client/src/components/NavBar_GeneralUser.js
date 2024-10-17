@@ -5,7 +5,7 @@ const wastewiseLogo = require("../images/logo_master.png");
 
 const Navbar_GeneralUser = ( {collectorName}) => {
     const location = useLocation(); // Get the current location
-    console.log('gen', collectorName)
+    // console.log('gen', collectorName)
 
     const navigate = useNavigate();
 
