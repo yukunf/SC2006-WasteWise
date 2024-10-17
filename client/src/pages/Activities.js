@@ -69,9 +69,9 @@ const Activities = () => {
     const [data, setData] = useState([]); // Use state to hold combined data
 
 
-    const getCSRFToken = () => {
-        return document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
-    };
+    // const getCSRFToken = () => {
+    //     return document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
+    // };
 
     useEffect(() => {
         const fetchRating = async () => {
@@ -79,7 +79,7 @@ const Activities = () => {
                 const response = await fetch(`http://localhost:8000/api/ratings/${localStorage.getItem('user_id')}`, {
                     method: 'GET',
                     headers: {
-                        'X-CSRFToken': getCSRFToken(),
+                        // 'X-CSRFToken': getCSRFToken(),
                         'Authorization': `Token ${localStorage.getItem('token')}`, // Include the token for authentication
                         'Content-Type': 'application/json',
                     },
