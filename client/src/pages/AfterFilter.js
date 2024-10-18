@@ -92,7 +92,7 @@ const AfterFilter = () => {
                 {filteredData.length > 0 ? (
                     filteredData.map((company, index) => (
                     <div key={index} className="border-b border-gray-300 py-2 px-12">
-                        <Link to={`/display/${company.company_name}`}>
+                        <Link to={`/display/${company._id}`}>
                             {company.company_name}
                         </Link>
                     </div>
