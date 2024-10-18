@@ -70,7 +70,7 @@ function App() {
             <Route path="/generalprofilepage" element={<GeneralRoute element={GeneralProfilePage} />} />
             <Route path="/rating" element={<GeneralRoute element={Rating} />} />
             <Route path="/userreport/:id" element={<GeneralRoute element={UserReport} />} />
-                
+            <Route path="/userreport/" element={<GeneralRoute element={UserReport} />} />                
                
             <Route path="/Home_Collector" element={<CollectorRoute element={Home_Collector} />} />
             <Route path="/CollectorMainProfile" element={<CollectorRoute element={CollectorMainProfile} />} />
@@ -81,7 +81,7 @@ function App() {
 
             <Route path="/remove" element={<RegulatorRoute element={Remove} />} />
             <Route path="/listreport" element={<RegulatorRoute element={ListReport} />} />
-            <Route path="/report" element={<RegulatorRoute element={Report} />} />
+            <Route path="/report/:id" element={<RegulatorRoute element={Report} />} />
             <Route path="/Home_Regulator" element={<RegulatorRoute element={Home_Regulator} />} />
 
             {/* if user trying to access pages that doesn't exist! */}

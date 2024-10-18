@@ -27,12 +27,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# Application definition
+
 
 INSTALLED_APPS = [
     #'user',
     'rating',
     #'collector',
+    'report',
     'corsheaders',
     'user.apps.UserConfig',
     'rest_framework',

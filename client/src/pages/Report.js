@@ -1,57 +1,84 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
 import Navbar_Regulator from "../components/NavBar_Regulator";
-import {Link} from 'react-router-dom'
-
 import Footer from "../components/Footer";
 
-const bookIcon = require("../images/searchicon.png")
+const bookIcon = require("../images/searchicon.png");
 
 const Report = () => {
+    const { id } = useParams();  // Extract report ID from URL
+    const [report, setReport] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    useEffect(() => {
+        const fetchReport = async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/api/reports/${id}/`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,  // Send user token if needed
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setReport(data);  // Set the report data to state
+                } else {
+                    setErrorMessage('Failed to fetch report details.');
+                }
+            } catch (error) {
+                setErrorMessage('Network error. Please try again later.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchReport();
+    }, [id]);
+
+    if (loading) return <p>Loading...</p>;
+    if (errorMessage) return <p className="text-red-500">{errorMessage}</p>;
+
     return (
         <div className="w-full h-full">
             <Navbar_Regulator />
             <div className="flex flex-col lg:flex-row bg-[#016a70] h-[50vh]" style={{paddingLeft:"10%",paddingRight:"10%",paddingTop:"50px"}}>
                 <h1 className="text-[#FFFDF7] font-poppins w-full text-7xl font-bold mt-[150px] ml-4 lg:ml-10">Reported Case</h1>
-                <img src={bookIcon} className="lg:w-[150px] lg:h-[150px] w-[12%] mt-20 ml-4"></img>
+                <img src={bookIcon} className="lg:w-[150px] lg:h-[150px] w-[12%] mt-20 ml-4" alt="Book Icon" />
             </div>
             <div className="flex justify-center mb-4 mt-[100px]">
                 <div className="bg-white font-bold rounded-lg shadow-lg p-6 w-[90%] h-200 max-w-3x l -mt-40 relative text-left">
                     <div>
-                        <p>Reported Collector: E Waste 123</p>
-                        <p>Email Address: e_waste123@gmail.com</p>
-                        <p>Address: 135 Bedok West 2 #01-56</p>
+                        <p>Reported Collector: {report?.collector_name || 'N/A'}</p>
+                        <p>Email Address: {report?.collector_email || 'N/A'}</p>
+                        <p>Address: {report?.collector_address || 'N/A'}</p>
                     </div>
                     <div className="flex justify-between">
                         <div>
-                        <p className="mt-4">Reported by: Jess</p>
-                        <p>Email Address: jess123@gmail.com</p>
+                            <p className="mt-4">Reported by: {report?.user_name || 'N/A'}</p>
+                            <p>Email Address: {report?.user_email || 'N/A'}</p>
                         </div>
                         <button className="rounded-lg bg-[#016A70] w-[251px] h-[52px] shadow-xl text-white p-3 font-medium" onClick={() => alert('Contact button pressed')}>
                             Contact
                         </button>
                     </div>
-                    <div>
-                        
-                    </div>
                     <div className="bg-[#D9D9D9] mt-[20px] rounded-2xl p-4">
                         <p>Reason stated by User:</p>
-                        <p className="font-semibold mt-4">E Waste 123 took a long time before processing my request. They also
-                            only informed on the spot on some of the items not being able to 
-                            proceed. Bad service.</p>
+                        <p className="font-semibold mt-4">{report?.reason || 'N/A'}</p>
                     </div>
                     <div className="bg-[#D9D9D9] mt-[20px] rounded-2xl p-4">
-                        <p>Rating by User: 1/5</p>
+                        <p>Comments: {report?.comments || 'N/A'}</p>
                     </div>
                     <div className="flex justify-center mt-5 space-x-2">
                         <Link to='/listreport'>
-                        <button className="bg-[#5ba6dc] text-white font-bold py-2 px-4 rounded  mt-2 shadow-xl" onClick={() => alert('Close Case')}>
+                            <button className="bg-[#5ba6dc] text-white font-bold py-2 px-4 rounded mt-2 shadow-xl" onClick={() => alert('Close Case')}>
                                 Close Case
                             </button>
-                            </Link>
+                        </Link>
                         <Link to='/remove'>
-                        <button className="bg-[#FF0000] text-white font-bold py-2 px-4 rounded  mt-2 shadow-xl" >
-                            Remove Collector
-                        </button>
+                            <button className="bg-[#FF0000] text-white font-bold py-2 px-4 rounded mt-2 shadow-xl">
+                                Remove Collector
+                            </button>
                         </Link>
                     </div>
                 </div>
