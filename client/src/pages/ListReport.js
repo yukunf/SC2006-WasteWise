@@ -42,7 +42,33 @@ const ListReport = () => {
     // Filter reports based on the selected collector name
     const filteredReports = filter ? reports.filter(report => report.collector_name === filter) : reports;
 
-    if (loading) return <p>Loading...</p>;
+    // Function to delete a report by ID
+    const deleteReport = async (id) => {
+        const confirmed = window.confirm("Are you sure you want to delete this report?");
+        if (!confirmed) return;
+
+        try {
+            const response = await fetch(`http://localhost:8000/api/reports/${id}/delete/`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                setReports(reports.filter(report => report.id !== id));  // Remove the deleted report from the state
+                alert('Report deleted successfully');
+            } else {
+                const errorData = await response.json();
+                alert(errorData.error || 'Failed to delete the report');
+            }
+        } catch (error) {
+            alert('Network error. Please try again later.');
+        }
+    };
+
+    if (loading) return <p>Loading reports...</p>;
     if (errorMessage) return <p className="text-red-500">{errorMessage}</p>;
 
     return (
@@ -69,28 +95,42 @@ const ListReport = () => {
                             <th className="p-4 text-black font-bold text-base text-center border-b border-r border-gray-300">Date Created</th>
                             <th className="p-4 text-black font-bold text-base text-center border-b border-r border-gray-300">Created by User</th>
                             <th className="p-4 text-black font-bold text-base text-center border-b border-r border-gray-300">Reported Collector</th>
-                            <th className="p-4 text-black font-bold text-base text-center"></th>
+                            <th className="p-4 text-black font-bold text-base text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredReports.map((report) => (
-                            <tr key={report.id}>
-                                <td className="p-4 text-black font-bold border-b border-r border-gray-300">
-                                    {new Date(report.created_at).toLocaleDateString()}
-                                </td>
-                                <td className="p-4 text-black font-bold border-b border-r border-gray-300">
-                                    {report.user_name || 'N/A'}
-                                </td>
-                                <td className="p-4 text-black font-bold border-b border-r border-gray-300">
-                                    {report.collector_name || 'N/A'}
-                                </td>
-                                <td className="p-4 text-center">
-                                    <Link to={`/report/${report.id}`}>
-                                        <button className="bg-white text-blue-500 px-4 py-2 rounded">View Report</button>
-                                    </Link>
+                        {filteredReports.length > 0 ? (
+                            filteredReports.map((report) => (
+                                <tr key={report.id}>
+                                    <td className="p-4 text-black font-bold border-b border-r border-gray-300">
+                                        {new Date(report.created_at).toLocaleDateString()}
+                                    </td>
+                                    <td className="p-4 text-black font-bold border-b border-r border-gray-300">
+                                        {report.user_name || 'N/A'}
+                                    </td>
+                                    <td className="p-4 text-black font-bold border-b border-r border-gray-300">
+                                        {report.collector_name || 'N/A'}
+                                    </td>
+                                    <td className="p-4 text-center">
+                                        <Link to={`/report/${report.id}`}>
+                                            <button className="bg-white text-blue-500 px-4 py-2 rounded">View Report</button>
+                                        </Link>
+                                        <button
+                                            className="bg-red-500 text-white px-4 py-2 ml-4 rounded"
+                                            onClick={() => deleteReport(report.id)}
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="4" className="text-center p-4 text-black font-bold">
+                                    No reports found
                                 </td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>

@@ -53,3 +53,12 @@ def view_report(request, pk):
     serializer = ReportSerializer(report)
     return Response(serializer.data)
 
+# View to delete a specific report by its ID
+@api_view(['DELETE'])
+def delete_report(request, pk):
+    try:
+        report = Report.objects.get(pk=pk)
+        report.delete()
+        return Response({"message": "Report deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    except Report.DoesNotExist:
+        return Response({"error": "Report not found"}, status=status.HTTP_404_NOT_FOUND)
