@@ -70,6 +70,8 @@ const UserReport = () => {
             comments: report.comments,
         };
 
+        console.log('selected Collector: ', companies);
+
         console.log('Report Data:', reportData);  // Log the data being sent
 
         setErrorMessage('');

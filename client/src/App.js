@@ -79,7 +79,7 @@ function App() {
             <Route path="/collectorprofilepage" element={<CollectorRoute element={CollectorProfilePage} />} />
 
 
-            <Route path="/remove" element={<RegulatorRoute element={Remove} />} />
+            <Route path="/remove/:id" element={<RegulatorRoute element={Remove} />} />
             <Route path="/listreport" element={<RegulatorRoute element={ListReport} />} />
             <Route path="/report/:id" element={<RegulatorRoute element={Report} />} />
             <Route path="/Home_Regulator" element={<RegulatorRoute element={Home_Regulator} />} />
