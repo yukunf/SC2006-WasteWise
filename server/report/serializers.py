@@ -8,6 +8,6 @@ class ReportSerializer(serializers.ModelSerializer):
         model = Report
         fields = [
             'id', 'userID', 'user_name', 'user_email',
-            'collector_id', 'collector_name', 'collector_email', 'collector_address',
+            'collector_id', 'collector_name', 'collector_telephone', 'collector_address',
             'reason', 'comments', 'created_at'
         ]

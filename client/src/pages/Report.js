@@ -56,7 +56,7 @@ const Report = () => {
                 <div className="bg-white font-bold rounded-lg shadow-lg p-6 w-[90%] h-200 max-w-3xl -mt-40 relative text-left">
                     <div>
                         <p>Reported Collector: {report?.collector_name || 'N/A'}</p>
-                        <p>Email Address: {report?.collector_email || 'N/A'}</p>
+                        <p>Telephone: {report?.collector_telephone || 'N/A'}</p>
                         <p>Address: {report?.collector_address || 'N/A'}</p>
                     </div>
                     <div className="flex justify-between">

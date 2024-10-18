@@ -8,7 +8,7 @@ class Report(models.Model):
 
     collector_id = models.IntegerField()  # Collector's ID
     collector_name = models.CharField(max_length=255, null=True)  # Collector's name
-    collector_email = models.EmailField(null=True)  # Collector's email
+    collector_telephone = models.CharField(max_length=255)  # Collector's email
     collector_address = models.CharField(max_length=255, null=True)  # Collector's address
 
     reason = models.CharField(max_length=255)  # Reason for the report

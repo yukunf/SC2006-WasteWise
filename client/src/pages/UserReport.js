@@ -15,6 +15,9 @@ const UserReport = () => {
     const [successMessage, setSuccessMessage] = useState('');  // Add success message state
     const navigate = useNavigate();
 
+    const [fullName, setFullName] = useState(null);
+    const [error, setError] = useState(null);
+
     // Fetch collector names and IDs from an API
     useEffect(() => {
         const fetchCompanies = async () => {
@@ -26,7 +29,9 @@ const UserReport = () => {
                 const json = await response.json();
                 const companyData = json.result.records.map(record => ({
                     id: record._id,  // Store only collector ID
-                    name: record.company_name  // Store collector name
+                    name: record.company_name,  // Store collector name
+                    address: record.company_address,
+                    telephone : record.telephone_no
                 }));
                 setCompanies(companyData);
             } catch (error) {
@@ -37,7 +42,11 @@ const UserReport = () => {
         };
 
         fetchCompanies();
-    }, []);
+ 
+    },
+    []);
+
+
 
     const handleSubmit = async () => {
         if (!report.collector_id || !report.reason || !report.comments) {
@@ -64,7 +73,7 @@ const UserReport = () => {
             user_email: userEmail,
             collector_id: selectedCollector.id,
             collector_name: selectedCollector.name,
-            collector_email: selectedCollector.email,
+            collector_telephone: selectedCollector.telephone,
             collector_address: selectedCollector.address,
             reason: report.reason,
             comments: report.comments,

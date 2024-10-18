@@ -15,7 +15,7 @@ def submit_report(request):
     user_name = request.data.get('user_name')
     user_email = request.data.get('user_email')
     collector_name = request.data.get('collector_name')
-    collector_email = request.data.get('collector_email')
+    collector_telephone = request.data.get('collector_telephone')
     collector_address = request.data.get('collector_address')
 
     report_data = {
@@ -24,7 +24,7 @@ def submit_report(request):
         'user_email': user_email,
         'collector_id': request.data.get('collector_id'),
         'collector_name': collector_name,
-        'collector_email': collector_email,
+        'collector_telephone': collector_telephone,
         'collector_address': collector_address,
         'reason': request.data.get('reason'),
         'comments': request.data.get('comments'),
