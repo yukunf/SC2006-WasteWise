@@ -31,7 +31,7 @@ class RatingViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], url_path='collector/(?P<collector_id>[^/.]+)')
     def get_ratings_for_collector(self, request, collector_id=None):
-        ratings = Ratings.objects.filter(collector_id=collector_id)
+        ratings = Ratings.objects.filter(collectorID=collector_id)
         serializer = self.get_serializer(ratings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     

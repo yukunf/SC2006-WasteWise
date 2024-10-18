@@ -10,9 +10,9 @@ const Rating = () => {
     const [error, setError] = useState(null);
     const [collectorId, setCollectorId] = useState(""); // Store the collector ID
 
-    const getCSRFToken = () => {
-        return document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
-    };
+    // const getCSRFToken = () => {
+    //     return document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
+    // };
     
     const handleStarClick = (index) => {
         setRating(index);
@@ -66,7 +66,7 @@ const Rating = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': getCSRFToken(),
+                    // 'X-CSRFToken': getCSRFToken(),
                     'Authorization': `Token ${localStorage.getItem('token')}`, // Include the token for authentication
                 },
                 credentials: 'include',  // This ensures cookies (session) are included in the request

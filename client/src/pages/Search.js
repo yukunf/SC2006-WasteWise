@@ -132,7 +132,7 @@ const Search = () => {
                         {results.length > 0 ? (
                             results.map((result, index) => (
                                 <div key={index} className="border-b border-gray-300 py-2 px-12">
-                                    <Link to={`/display/${encodeURIComponent(result.company_name)}`}>{result.company_name}</Link>
+                                    <Link to={`/display/${result._id}`}>{result.company_name}</Link>
                                 </div>
                             ))
                         ) : (
