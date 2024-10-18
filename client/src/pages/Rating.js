@@ -139,7 +139,7 @@ const Rating = () => {
                             placeholder="Enter your comments"
                             style={{ marginLeft: '3%' }}
                         ></textarea>
-                        <Link to={`/`}>
+                        <Link to={`/Home_GeneralUser`}>
                             <button
                                 className="mt-12 ml-12 mr-12 rounded-lg bg-[#016A70] w-[251px] h-[52px] shadow-xl text-white p-3 font-medium"
                                 onClick={handleSubmit}

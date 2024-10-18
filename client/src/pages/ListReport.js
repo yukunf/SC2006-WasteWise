@@ -8,6 +8,7 @@ const ListReport = () => {
     const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
     const [filter, setFilter] = useState('');  // Selected filter (collector name)
+    const [collectors, setCollectors] = useState([]);  // State to store unique collectors
 
     useEffect(() => {
         const fetchReports = async () => {
@@ -22,6 +23,10 @@ const ListReport = () => {
                 if (response.ok) {
                     const data = await response.json();
                     setReports(data);
+
+                    // Extract unique collector names
+                    const uniqueCollectors = [...new Set(data.map(report => report.collector_name))];
+                    setCollectors(uniqueCollectors);  // Store unique collector names in state
                 } else {
                     setErrorMessage('Failed to load reports.');
                 }
@@ -42,32 +47,6 @@ const ListReport = () => {
     // Filter reports based on the selected collector name
     const filteredReports = filter ? reports.filter(report => report.collector_name === filter) : reports;
 
-    // Function to delete a report by ID
-    const deleteReport = async (id) => {
-        const confirmed = window.confirm("Are you sure you want to delete this report?");
-        if (!confirmed) return;
-
-        try {
-            const response = await fetch(`http://localhost:8000/api/reports/${id}/delete/`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (response.ok) {
-                setReports(reports.filter(report => report.id !== id));  // Remove the deleted report from the state
-                alert('Report deleted successfully');
-            } else {
-                const errorData = await response.json();
-                alert(errorData.error || 'Failed to delete the report');
-            }
-        } catch (error) {
-            alert('Network error. Please try again later.');
-        }
-    };
-
     if (loading) return <p>Loading reports...</p>;
     if (errorMessage) return <p className="text-red-500">{errorMessage}</p>;
 
@@ -82,8 +61,11 @@ const ListReport = () => {
                     </button>
                     <select value={filter} onChange={handleFilterChange} className="ml-2 p-2 border border-gray-300 rounded">
                         <option value="">All Collectors</option>
-                        <option value="E WASTE 123">E WASTE 123</option>
-                        <option value="800 WASTE COLLECTOR">800 WASTE COLLECTOR</option>
+                        {collectors.map(collector => (
+                            <option key={collector} value={collector}>
+                                {collector}
+                            </option>
+                        ))}
                     </select>                   
                 </div>
             </div>
@@ -115,12 +97,6 @@ const ListReport = () => {
                                         <Link to={`/report/${report.id}`}>
                                             <button className="bg-white text-blue-500 px-4 py-2 rounded">View Report</button>
                                         </Link>
-                                        <button
-                                            className="bg-red-500 text-white px-4 py-2 ml-4 rounded"
-                                            onClick={() => deleteReport(report.id)}
-                                        >
-                                            Delete
-                                        </button>
                                     </td>
                                 </tr>
                             ))

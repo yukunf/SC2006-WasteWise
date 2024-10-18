@@ -37,6 +37,16 @@ def submit_report(request):
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['PATCH'])
+def mark_report_contacted(request, pk):
+    try:
+        report = Report.objects.get(pk=pk)
+        report.contacted = True  # Update the contacted status
+        report.save()
+        return Response({'message': 'Report marked as contacted'}, status=status.HTTP_200_OK)
+    except Report.DoesNotExist:
+        return Response({'error': 'Report not found'}, status=status.HTTP_404_NOT_FOUND)
+
 @api_view(['GET'])
 def list_reports(request):
     reports = Report.objects.all()
@@ -54,11 +64,11 @@ def view_report(request, pk):
     return Response(serializer.data)
 
 # View to delete a specific report by its ID
-@api_view(['DELETE'])
-def delete_report(request, pk):
-    try:
-        report = Report.objects.get(pk=pk)
-        report.delete()
-        return Response({"message": "Report deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-    except Report.DoesNotExist:
-        return Response({"error": "Report not found"}, status=status.HTTP_404_NOT_FOUND)
+#@api_view(['DELETE'])
+#def delete_report(request, pk):
+#    try:
+#        report = Report.objects.get(pk=pk)
+#        report.delete()
+#        return Response({"message": "Report deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+#    except Report.DoesNotExist:
+#        return Response({"error": "Report not found"}, status=status.HTTP_404_NOT_FOUND)
