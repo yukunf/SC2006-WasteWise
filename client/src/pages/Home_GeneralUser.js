@@ -28,6 +28,7 @@ const Home_GeneralUser = () => {
                     const data = await response.json();
                     console.log('User details:', data);
                     setFullName(`${data.first_name} ${data.last_name}`);
+
                 } else {
                     const errorData = await response.json();
                     setError(errorData.error); // Display error message if retrieval fails

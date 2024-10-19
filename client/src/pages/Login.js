@@ -47,6 +47,9 @@ const Login = () => {
                 localStorage.setItem('email', data.email);
                 localStorage.setItem('collector_id', data.collector_id);
                 localStorage.setItem('role', data.role);
+                localStorage.setItem('userEmail', data.email);
+                localStorage.setItem('userName', data.first_name);
+                console.log(data);
 
                 // Redirect to respective home page after successful login
                 if (localStorage.getItem('role') == 'general') {

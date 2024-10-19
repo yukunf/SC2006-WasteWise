@@ -23,6 +23,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('user.urls')),
     path('api/', include('rating.urls')),
-    path('api/', include('collector.urls'))
+    path('api/', include('collector.urls')),
+    path('api/reports/', include('report.urls')),
     # path('submit-rating/', submit_rating_view, name='submit_rating'),
 ]
+
+

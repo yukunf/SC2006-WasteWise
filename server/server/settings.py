@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     #'user',
     'rating',
     'collector',
+    'report',
     'corsheaders',
     'user.apps.UserConfig',
     'rest_framework',
