@@ -181,7 +181,26 @@ const Activities = () => {
                     content: `Rated ${companyName} (Collector ID: ${rating.collectorID})`,
                     rating: rating.rating,
                     comments: rating.comments,
-                    datetime: new Date(rating.created_at).toLocaleString(),
+                    datetime: (() => {
+                        const date = new Date(rating.created_at);
+                        const day = date.getDate(); // Get the day
+                        const month = date.toLocaleString('en-US', { month: 'long' }); // Get full month name
+                        const year = date.getFullYear(); // Get the year
+                        let hours = date.getHours(); // Get hours (24-hour format)
+                        const minutes = date.getMinutes().toString().padStart(2, '0'); // Pad minutes with '0' if needed
+                        const period = hours >= 12 ? 'PM' : 'AM'; // Determine AM or PM
+                    
+                        if (hours > 12) {
+                            hours -= 12; // Convert to 12-hour format
+                        }
+                        if (hours === 0) {
+                            hours = 12; // Handle midnight (00:00)
+                        }
+                        
+                        const formattedHours = hours.toString().padStart(2, '0'); // Pad hours if needed
+                        return `${day} ${month} ${year} ${formattedHours}:${minutes}${period}`;
+                    })(),
+                    // datetime: new Date(rating.created_at).toLocaleString(),
                     remarks: "NIL"
                 };
 

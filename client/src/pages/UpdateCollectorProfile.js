@@ -59,8 +59,8 @@ const UpdateCollectorProfile = () => {
                     Successfully updated.
                 </div>
             )}
-            <div className="absolute mt-[400px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white shadow-lg p-10 rounded-lg w-[950px] h-[600px] border border-gray-300 font-poppins text-left">
-            <div className="w-[220px] h-[220px] flex items-center justify-center border border-gray-500 ml-auto">
+            <div className="absolute mt-[440px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white shadow-lg p-10 rounded-lg w-[950px] h-[675px] border border-gray-300 font-poppins text-left">
+                <div className="w-[220px] h-[220px] flex items-center justify-center border border-gray-500 ml-auto">
                     <button className="border-2 border-gray-300 rounded-3xl p-2 hover:bg-gray-100">Change logo</button>
                 </div>
                 <div className="absolute top-10 left-20">
@@ -77,6 +77,18 @@ const UpdateCollectorProfile = () => {
                         Address
                     </h5>
                     <input type="address" className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your address"/>
+                    <div className="text-base font-semibold mt-3 flex justify-between gap-4 w-full">
+                        <h5 className="w-full">
+                            Address Latitude
+                        </h5>
+                        <h5 className="w-full">
+                            Address Longitude
+                        </h5>
+                    </div>
+                    <div className="flex justify-between gap-4 w-full">
+                        <input type="address latitude" className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your address latitude"/>
+                        <input type="address longitude" className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your address longitude"/>
+                    </div>
                     <h5 className="text-base font-semibold mt-3">
                         Contact Number
                     </h5>

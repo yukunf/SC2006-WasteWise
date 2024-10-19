@@ -60,7 +60,7 @@ function App() {
             <Route path="/search" element={<Search />} />
             <Route path="/filter" element={<SearchByFilter />} />
             <Route path="/afterfilter" element={<AfterFilter />} />
-            <Route path="/display/:name" element={<Display />} />
+            <Route path="/display/:id" element={<Display />} />
             <Route path="/contact" element={<Contact />} />
 
 
