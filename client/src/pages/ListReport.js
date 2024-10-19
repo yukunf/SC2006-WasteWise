@@ -8,6 +8,7 @@ const ListReport = () => {
     const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
     const [filter, setFilter] = useState('');  // Selected filter (collector name)
+    const [collectors, setCollectors] = useState([]);  // State to store unique collectors
 
     useEffect(() => {
         const fetchReports = async () => {
@@ -22,6 +23,10 @@ const ListReport = () => {
                 if (response.ok) {
                     const data = await response.json();
                     setReports(data);
+
+                    // Extract unique collector names
+                    const uniqueCollectors = [...new Set(data.map(report => report.collector_name))];
+                    setCollectors(uniqueCollectors);  // Store unique collector names in state
                 } else {
                     setErrorMessage('Failed to load reports.');
                 }
@@ -42,7 +47,7 @@ const ListReport = () => {
     // Filter reports based on the selected collector name
     const filteredReports = filter ? reports.filter(report => report.collector_name === filter) : reports;
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <p>Loading reports...</p>;
     if (errorMessage) return <p className="text-red-500">{errorMessage}</p>;
 
     return (
@@ -56,8 +61,11 @@ const ListReport = () => {
                     </button>
                     <select value={filter} onChange={handleFilterChange} className="ml-2 p-2 border border-gray-300 rounded">
                         <option value="">All Collectors</option>
-                        <option value="E WASTE 123">E WASTE 123</option>
-                        <option value="800 WASTE COLLECTOR">800 WASTE COLLECTOR</option>
+                        {collectors.map(collector => (
+                            <option key={collector} value={collector}>
+                                {collector}
+                            </option>
+                        ))}
                     </select>                   
                 </div>
             </div>
@@ -69,28 +77,36 @@ const ListReport = () => {
                             <th className="p-4 text-black font-bold text-base text-center border-b border-r border-gray-300">Date Created</th>
                             <th className="p-4 text-black font-bold text-base text-center border-b border-r border-gray-300">Created by User</th>
                             <th className="p-4 text-black font-bold text-base text-center border-b border-r border-gray-300">Reported Collector</th>
-                            <th className="p-4 text-black font-bold text-base text-center"></th>
+                            <th className="p-4 text-black font-bold text-base text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredReports.map((report) => (
-                            <tr key={report.id}>
-                                <td className="p-4 text-black font-bold border-b border-r border-gray-300">
-                                    {new Date(report.created_at).toLocaleDateString()}
-                                </td>
-                                <td className="p-4 text-black font-bold border-b border-r border-gray-300">
-                                    {report.user_name || 'N/A'}
-                                </td>
-                                <td className="p-4 text-black font-bold border-b border-r border-gray-300">
-                                    {report.collector_name || 'N/A'}
-                                </td>
-                                <td className="p-4 text-center">
-                                    <Link to={`/report/${report.id}`}>
-                                        <button className="bg-white text-blue-500 px-4 py-2 rounded">View Report</button>
-                                    </Link>
+                        {filteredReports.length > 0 ? (
+                            filteredReports.map((report) => (
+                                <tr key={report.id}>
+                                    <td className="p-4 text-black font-bold border-b border-r border-gray-300">
+                                        {new Date(report.created_at).toLocaleDateString()}
+                                    </td>
+                                    <td className="p-4 text-black font-bold border-b border-r border-gray-300">
+                                        {report.user_name || 'N/A'}
+                                    </td>
+                                    <td className="p-4 text-black font-bold border-b border-r border-gray-300">
+                                        {report.collector_name || 'N/A'}
+                                    </td>
+                                    <td className="p-4 text-center">
+                                        <Link to={`/report/${report.id}`}>
+                                            <button className="bg-white text-blue-500 px-4 py-2 rounded">View Report</button>
+                                        </Link>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="4" className="text-center p-4 text-black font-bold">
+                                    No reports found
                                 </td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>

@@ -80,7 +80,7 @@ const Remove = () => {
                     <div className="bg-white font-bold rounded-lg shadow-lg p-6 w-[90%] h-200 max-w-3xl z-10 relative flex flex-col justify-center">
                         {/* Display the fetched collector information */}
                         <p>Reported Collector: {report.collector_name || 'N/A'}</p>
-                        <p>Email Address: {report.collector_email || 'N/A'}</p>
+                        <p>Telephone: {report.collector_telephone || 'N/A'}</p>
                         <p>Address: {report.collector_address || 'N/A'}</p>
                         <p>Reason: {report.reason || 'N/A'}</p>
                         <p>Comments: {report.comments || 'N/A'}</p>

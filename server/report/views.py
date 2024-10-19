@@ -15,7 +15,7 @@ def submit_report(request):
     user_name = request.data.get('user_name')
     user_email = request.data.get('user_email')
     collector_name = request.data.get('collector_name')
-    collector_email = request.data.get('collector_email')
+    collector_telephone = request.data.get('collector_telephone')
     collector_address = request.data.get('collector_address')
 
     report_data = {
@@ -24,7 +24,7 @@ def submit_report(request):
         'user_email': user_email,
         'collector_id': request.data.get('collector_id'),
         'collector_name': collector_name,
-        'collector_email': collector_email,
+        'collector_telephone': collector_telephone,
         'collector_address': collector_address,
         'reason': request.data.get('reason'),
         'comments': request.data.get('comments'),
@@ -36,6 +36,16 @@ def submit_report(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PATCH'])
+def mark_report_contacted(request, pk):
+    try:
+        report = Report.objects.get(pk=pk)
+        report.contacted = True  # Update the contacted status
+        report.save()
+        return Response({'message': 'Report marked as contacted'}, status=status.HTTP_200_OK)
+    except Report.DoesNotExist:
+        return Response({'error': 'Report not found'}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['GET'])
 def list_reports(request):
@@ -53,3 +63,12 @@ def view_report(request, pk):
     serializer = ReportSerializer(report)
     return Response(serializer.data)
 
+# View to delete a specific report by its ID
+#@api_view(['DELETE'])
+#def delete_report(request, pk):
+#    try:
+#        report = Report.objects.get(pk=pk)
+#        report.delete()
+#        return Response({"message": "Report deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+#    except Report.DoesNotExist:
+#        return Response({"error": "Report not found"}, status=status.HTTP_404_NOT_FOUND)

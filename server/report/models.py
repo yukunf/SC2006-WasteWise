@@ -8,12 +8,13 @@ class Report(models.Model):
 
     collector_id = models.IntegerField()  # Collector's ID
     collector_name = models.CharField(max_length=255, null=True)  # Collector's name
-    collector_email = models.EmailField(null=True)  # Collector's email
+    collector_telephone = models.CharField(max_length=255)  # Collector's email
     collector_address = models.CharField(max_length=255, null=True)  # Collector's address
 
     reason = models.CharField(max_length=255)  # Reason for the report
     comments = models.TextField()  # User's comments about the report
     created_at = models.DateTimeField(auto_now_add=True)  # Automatically set to now when the report is created
+    contacted = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Report on {self.collector_name} by {self.user_name}'

@@ -10,20 +10,22 @@ const Report = () => {
     const [report, setReport] = useState(null);
     const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
-    const [contacted, setContacted] = useState(false);  // New state for contact button
+    const [contacted, setContacted] = useState(false);  // State for contacted button
 
+    // Fetch the report details, including the contacted status
     useEffect(() => {
         const fetchReport = async () => {
             try {
                 const response = await fetch(`http://localhost:8000/api/reports/${id}`, {
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`,  // Send user token if needed
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     }
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    setReport(data);  // Set the report data to state
+                    setReport(data);
+                    setContacted(data.contacted);  // Set contacted state from backend data
                 } else {
                     setErrorMessage('Failed to fetch report details.');
                 }
@@ -37,12 +39,38 @@ const Report = () => {
         fetchReport();
     }, [id]);
 
-    const handleContact = () => {
-        setContacted(true);  // Set contacted to true when the button is pressed
-        alert('Collector has been contacted');
+    // Function to mark the report as contacted
+    const markAsContacted = async () => {
+        try {
+            const response = await fetch(`http://localhost:8000/api/reports/${id}/contact/`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.ok) {
+                setContacted(true);  // Update local state to disable the button
+                alert('Collector has been contacted');
+            } else {
+                alert('Failed to mark as contacted');
+            }
+        } catch (error) {
+            alert('Network error. Please try again later.');
+        }
     };
 
+    // Handle the contact button click
+    const handleContact = () => {
+        if (!contacted) {
+            markAsContacted();  // Send request to mark the report as contacted
+        }
+    };
+
+    // If the report is still loading, show a loading message
     if (loading) return <p>Loading...</p>;
+    // If there's an error, display it
     if (errorMessage) return <p className="text-red-500">{errorMessage}</p>;
 
     return (
@@ -56,7 +84,7 @@ const Report = () => {
                 <div className="bg-white font-bold rounded-lg shadow-lg p-6 w-[90%] h-200 max-w-3xl -mt-40 relative text-left">
                     <div>
                         <p>Reported Collector: {report?.collector_name || 'N/A'}</p>
-                        <p>Email Address: {report?.collector_email || 'N/A'}</p>
+                        <p>Telephone: {report?.collector_telephone || 'N/A'}</p>
                         <p>Address: {report?.collector_address || 'N/A'}</p>
                     </div>
                     <div className="flex justify-between">
@@ -67,7 +95,7 @@ const Report = () => {
                         <button 
                             className={`rounded-lg w-[251px] h-[52px] shadow-xl text-white p-3 font-medium ${contacted ? 'bg-gray-500' : 'bg-[#016A70]'}`} 
                             onClick={handleContact}
-                            disabled={contacted}  // Disable the button once clicked
+                            disabled={contacted}  // Disable the button if already contacted
                         >
                             {contacted ? 'Contacted' : 'Contact'}  {/* Toggle button text */}
                         </button>

@@ -15,6 +15,38 @@ const UserReport = () => {
     const [successMessage, setSuccessMessage] = useState('');  // Add success message state
     const navigate = useNavigate();
 
+    const [fullName, setFullName] = useState(null);
+    const [error, setError] = useState(null);
+
+    // Fetch user details
+    useEffect(() => {
+        const fetchUserDetails = async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/api/users/${localStorage.getItem('user_id')}/`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Token ${localStorage.getItem('token')}`, // Include the token for authentication
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('User details:', data);
+                    setFullName(`${data.first_name} ${data.last_name}`);
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.error); // Display error message if retrieval fails
+                    console.error('Retrieval error:', errorData);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        fetchUserDetails();
+    }, []);
+
     // Fetch collector names and IDs from an API
     useEffect(() => {
         const fetchCompanies = async () => {
@@ -26,7 +58,9 @@ const UserReport = () => {
                 const json = await response.json();
                 const companyData = json.result.records.map(record => ({
                     id: record._id,  // Store only collector ID
-                    name: record.company_name  // Store collector name
+                    name: record.company_name,  // Store collector name
+                    address: record.company_address,
+                    telephone : record.telephone_no
                 }));
                 setCompanies(companyData);
             } catch (error) {
@@ -46,7 +80,6 @@ const UserReport = () => {
         }
 
         const userID = localStorage.getItem('user_id');
-        const userName = localStorage.getItem('userName');
         const userEmail = localStorage.getItem('userEmail');
 
         if (!userID) {
@@ -60,17 +93,15 @@ const UserReport = () => {
         // Store only collector ID and Name
         const reportData = {
             userID: parseInt(userID),
-            user_name: userName,
+            user_name: fullName,  // Use the full name fetched from the API
             user_email: userEmail,
             collector_id: selectedCollector.id,
             collector_name: selectedCollector.name,
-            collector_email: selectedCollector.email,
+            collector_telephone: selectedCollector.telephone,
             collector_address: selectedCollector.address,
             reason: report.reason,
             comments: report.comments,
         };
-
-        console.log('selected Collector: ', companies);
 
         console.log('Report Data:', reportData);  // Log the data being sent
 
@@ -118,6 +149,10 @@ const UserReport = () => {
 
                     {errorMessage && <p className="text-red-500 text-center mb-4">{errorMessage}</p>}
                     {successMessage && <p className="text-green-500 text-center mb-4">{successMessage}</p>} {/* Display success message */}
+
+                    {/* Display full name */}
+                    {fullName && <p className="text-xl text-gray-700 text-center mb-4">Logged in as: {fullName}</p>}
+                    {error && <p className="text-red-500 text-center mb-4">Failed to load user details.</p>}
 
                     {/* Dropdown to select the collector */}
                     <div className="mb-6">

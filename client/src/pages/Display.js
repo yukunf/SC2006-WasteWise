@@ -1,244 +1,90 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom'; 
 import Navbar_PublicUser from "../components/NavBar_PublicUser"; 
 import Navbar_GeneralUser from "../components/NavBar_GeneralUser"; 
 
-
 const Display = () => {
-    const dummyData = {
-        ratings: 4,
-        comments: [
-            { user: "John D.", date: "August 22, 2024", text: "Excellent service! The team arrived on time and handled the waste efficiently. Highly recommend!" },
-            { user: "Emily R.", date: "August 18, 2024", text: "Great service overall!" },
-            { user: "Jane M.", date: "August 19, 2024", text: "Responsive customer support!" },
-            { user: "Mark L.", date: "August 21, 2024", text: "Professional and efficient service!" }
-        ],
-    };
-
-    const [data, setData] = useState([]);
+    const { name } = useParams();  // Get the company name from the URL params
+    const [companyInfo, setCompanyInfo] = useState(null);
+    const [ratingsData, setRatingsData] = useState([]);  // Array to hold rating objects
+    const [averageRating, setAverageRating] = useState(0);  // Separate state for average rating
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [ratingData, setRatingData] = useState(null);
-
-
-    const [companyInfo, setCompanyInfo] = useState(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     const navigateToPrev = useNavigate();
+    const datasetId = "d_26afdd562f28b4acecb400c10b70f013";  // Replace with your actual dataset ID
 
-    const [isAuthenticated, setIsAuthenticated] = useState(false)
-
+    // Check if the user is authenticated
     useEffect(() => {
-        // every logged in user will have own token
-        const token = localStorage.getItem('token')
+        const token = localStorage.getItem('token');
+        setIsAuthenticated(!!token);
+    }, []);
 
-        if (token) {
-            setIsAuthenticated(true)
-        }
-
-        else {
-            setIsAuthenticated(false)
-        }
-    }, [])
-
-
-    // First useEffect for fetching data
+    // Fetch the company data
     useEffect(() => {
-        const datasetId = "d_26afdd562f28b4acecb400c10b70f013";
-        const url = `https://data.gov.sg/api/action/datastore_search?resource_id=${datasetId}&limit=314`;
-
-        fetch(url)
-            .then(response => {
+        const fetchCompanies = async () => {
+            try {
+                const response = await fetch(`https://data.gov.sg/api/action/datastore_search?resource_id=${datasetId}&limit=314`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch data');
                 }
-                return response.json();
-            })
-            .then(data => {
-                setData(data.result.records);
-                setLoading(false);
-            })
-            .catch(error => {
+                const data = await response.json();
+                setCompanyInfo(data.result.records.find(c => c.company_name === decodeURIComponent(name)));
+            } catch (error) {
                 setError(error);
+            } finally {
                 setLoading(false);
-            });
-    }, []); // Runs once when the component mounts
-
-    // console.log("dd", data)
-
-    const { id } = useParams();
-    console.log("id", id, data.length)
-
-    useEffect(() => {
-        if (id && data.length > 0) {
-            const chosenCompany = data.find((c) => c._id === parseInt(id, 10));
-            console.log("cc", chosenCompany)
-            setCompanyInfo(chosenCompany ? chosenCompany : null); // Handle company not found
-        }
-    }, [id, data]); 
-
-
-    const [userID, setUserID] = useState([]);
-
-    useEffect(() => {
-        const fetchRating = async () => {
-            try {
-                const response = await fetch(`http://localhost:8000/api/ratings/collector/${parseInt(id, 10)}`, {
-                    method: 'GET',
-                    headers: {
-                        // 'X-CSRFToken': getCSRFToken(),
-                        'Authorization': `Token ${localStorage.getItem('token')}`, // Include the token for authentication
-                        'Content-Type': 'application/json',
-                    },
-                });
-        
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('rating details:', data);
-                    setRatingData(data)
-                    const userIds = data.map(rating => rating.userID); // Assuming each rating has a `user_id` field
-                    setUserID(userIds);
-                    // setFullName(`${data.first_name} ${data.last_name}`);
-                } else {
-                    const errorData = await response.json();
-                    setError(errorData.error); // Display error message if retrieval fails
-                    console.error('Retrieval error:', errorData);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-
-        fetchRating();
-
-    }, []);
-
-    console.log("rating", ratingData)
-    console.log("User IDs:", userID);
-
-
-    const [fullName, setFullName] = useState([]);
-    const [comments, setComments] = useState([]);
-
-    useEffect(() => {
-        // Function to fetch user details for each user ID
-        const fetchUserDetails = async () => {
-            try {
-                // Make multiple requests for each user ID in the userIDs array
-                const userDetailsPromises = userID.map(userID => 
-                    fetch(`http://localhost:8000/api/users/${userID}/`, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Token ${localStorage.getItem('token')}`, // Include the token for authentication
-                            'Content-Type': 'application/json',
-                        },
-                    }).then(response => response.json()) // Parse each response as JSON
-                );
-    
-                // Use Promise.all to wait for all fetches to complete
-                const allUserDetails = await Promise.all(userDetailsPromises);
-    
-                // Log the user details for debugging
-                console.log('All user details:', allUserDetails);
-    
-                // Set the user details in state
-                const fullNamesArray = allUserDetails.map(user => `${user.first_name} ${user.last_name}`);
-                setFullName(fullNamesArray);
-            } catch (error) {
-                console.error('Error fetching user details:', error);
             }
         };
-    
-        if (userID.length > 0) { // Ensure there are user IDs to fetch
-            fetchUserDetails();
-        }
-    }, [userID]);
 
-    console.log('full name', fullName)
+        fetchCompanies();
+    }, [name]);
 
-    // useEffect(() => {
-    //     const fetchUserDetails = async () => {
-    //         try {
-    //             const response = await fetch(`http://localhost:8000/api/users/${localStorage.getItem('user_id')}/`, {
-    //                 method: 'GET',
-    //                 headers: {
-    //                     'Authorization': `Token ${localStorage.getItem('token')}`, // Include the token for authentication
-    //                     'Content-Type': 'application/json',
-    //                 },
-    //             });
-        
-    //             if (response.ok) {
-    //                 const data = await response.json();
-    //                 console.log('User details:', data);
-    //                 setFullName(`${data.first_name} ${data.last_name}`);
-    //             } else {
-    //                 const errorData = await response.json();
-    //                 setError(errorData.error); // Display error message if retrieval fails
-    //                 console.error('Retrieval error:', errorData);
-    //             }
-    //         } catch (error) {
-    //             console.error('Error:', error);
-    //         }
-    //     }
-
-    //     fetchUserDetails();
-
-    // }, []);
-
+    // Fetch ratings and comments based on collectorID (no authentication required)
     useEffect(() => {
-        if (ratingData && data.length > 0) {
-            const combinedData = [];
+        const fetchRatings = async () => {
+            if (!companyInfo) return;  // Don't fetch if companyInfo is not set
 
-            // Include rating activities
-            for (let i = 0; i < ratingData.length; i++) {
-                const rating = ratingData[i];
-                const eachName = fullName[i];
+            try {
+                const response = await fetch(`http://localhost:8000/api/ratings/collector/${companyInfo._id}/`);  // No Authorization header
+                if (!response.ok) {
+                    throw new Error('Failed to fetch ratings');
+                }
+                const ratingsData = await response.json();
+                setRatingsData(ratingsData);  // Set the fetched ratings
 
+                // Calculate average rating
+                const totalRating = ratingsData.reduce((sum, rating) => sum + rating.rating, 0);
+                const avgRating = ratingsData.length > 0 ? totalRating / ratingsData.length : 0;
+                setAverageRating(avgRating);
 
-                console.log("brooo")
-
-                const activity = {
-                    name: eachName,
-                    date: (() => {
-                        const date = new Date(rating.created_at);
-                        const day = date.getDate(); // Get the day
-                        const month = date.toLocaleString('en-US', { month: 'long' }); // Get full month name
-                        const year = date.getFullYear(); // Get the year
-
-                        return `${month} ${day}, ${year}`;
-                        
-                    })(),
-                    // rating: rating.rating,
-                    comments: rating.comments,
-                    // datetime: 
-                    // datetime: new Date(rating.created_at).toLocaleString(),
-                    // remarks: "NIL"
-                };
-
-                combinedData.push(activity);
+            } catch (error) {
+                setError(error);
             }
+        };
 
-            setComments(combinedData);
+        if (companyInfo) {
+            fetchRatings();
         }
-    }, [ratingData, data]);
+    }, [companyInfo]);
 
     // Handle loading and error states
     if (loading) return <p className='text-center text-gray-600 italic text-lg'>Loading...</p>;
-    if (error) return <p className="text-center text-red-600 font-bold text-lg">Error fetching data: {error.message}</p>;
+    if (error) return <p className="text-center text-red-600 font-bold text-lg">Error: {error.message}</p>;
 
-    // console.log("chosen company", companyInfo);
-    
+    // Safeguard for the average rating and fallback to 0 if it's undefined or null
+    const displayAverageRating = averageRating.toFixed(1);
+
     return (
         <div className="w-full h-full">
             {isAuthenticated ? <Navbar_GeneralUser /> : <Navbar_PublicUser />}
 
-            {/* Content of your page */}
             <div className="flex flex-col lg:flex-row bg-[#016a70] h-[25vh] relative" style={{ padding: "100px 10% 0" }}>
-                <div className="flex-initial flex flex-col w-full lg:w-1/2 pt-4 ssm:pt-0 mt-0">
-                    {/* You can add any additional content or components here if needed */}
-                </div>
+                <div className="flex-initial flex flex-col w-full lg:w-1/2 pt-4 ssm:pt-0 mt-0"></div>
             </div>
 
-            {/* Company Name - placed right above the table */}
+            {/* Company Name */}
             <div className="flex justify-center mt-10">
                 <h2 className="text-lg font-semibold">{companyInfo ? companyInfo.company_name : 'No company found'}</h2>
             </div>
@@ -263,25 +109,39 @@ const Display = () => {
                             <tr>
                                 <td className="border-b py-2 font-bold">Ratings</td>
                                 <td className="border-b py-2">
-                                    {Array(dummyData.ratings).fill().map((_, index) => (
+                                    {/* Render stars based on the average rating */}
+                                    {Array(Math.round(averageRating)).fill().map((_, index) => (
                                         <span key={index} className="text-yellow-500 text-2xl">★</span>
                                     ))}
-                                    {Array(5 - dummyData.ratings).fill().map((_, index) => (
+                                    {Array(5 - Math.round(averageRating)).fill().map((_, index) => (
                                         <span key={index} className="text-gray-300 text-2xl">★</span>
                                     ))}
+                                    <span className="ml-2 text-gray-600">({displayAverageRating} out of 5)</span>
                                 </td>
                             </tr>
                             <tr>
                                 <td className="py-2 font-bold">Comments</td>
                                 <td className="py-2">
-                                    {/* Scrollable comment box */}
                                     <div className="h-24 overflow-y-auto" style={{ maxHeight: "150px" }}>
-                                        {comments.map((c, index) => (
-                                            <div key={index} className="mb-2">
-                                                <strong>{c.name} ({c.date})</strong>
-                                                <p>{c.comments}</p>
-                                            </div>
-                                        ))}
+                                        {ratingsData.length > 0 ? (
+                                            ratingsData.map((rating, index) => (
+                                                <div key={index} className="mb-4">
+                                                    <div className="flex items-center">
+                                                        {/* Render stars based on rating value */}
+                                                        {Array(rating.rating).fill().map((_, i) => (
+                                                            <span key={i} className="text-yellow-500 text-2xl">★</span>
+                                                        ))}
+                                                        {Array(5 - rating.rating).fill().map((_, i) => (
+                                                            <span key={i} className="text-gray-300 text-2xl">★</span>
+                                                        ))}
+                                                    </div>
+                                                    <strong>User {rating.userID} ({new Date(rating.created_at).toLocaleDateString()}):</strong>
+                                                    <p>{rating.comments}</p>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p>No comments available.</p>
+                                        )}
                                     </div>
                                 </td>
                             </tr>
@@ -293,21 +153,14 @@ const Display = () => {
             {/* Back Button */}
             <div className="flex justify-end mt-6 pr-72">
                 <Link
-                    // to="/previous-page" // Adjust this link based on where "back" should go
                     onClick={() => navigateToPrev(-1)}
                     className="w-[176px] h-[52px] flex items-center justify-center bg-[#016A70] text-white rounded-lg hover:bg-[#014f52] mr-6"
                 >
                     BACK
                 </Link>
             </div>
-
-
-
         </div>
     );
-}
+};
 
 export default Display;
-
-
-
