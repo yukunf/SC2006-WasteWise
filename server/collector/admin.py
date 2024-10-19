@@ -8,16 +8,30 @@ from .models import Collector
 @admin.action(description='Update All Collectors from gov.sg')
 def update_collectors_from_source(modeladmin, request, queryset):
     try:
-        datasetId = "d_26afdd562f28b4acecb400c10b70f013"
-        url = "https://data.gov.sg/api/action/datastore_search?resource_id=" + datasetId
-        response = requests.get(url)
-        data = response.json()
 
-        print(f"Getting data: {data['success']}")
+            appendix = "/api/action/datastore_search?resource_id=d_26afdd562f28b4acecb400c10b70f013"
+            url = "https://data.gov.sg"
+            all_records = []
+            while url:
+                reqURL = url + appendix
+                response = requests.get(reqURL)
+                data = response.json()
+                if response.status_code == 200 and data['success'] is True:
 
-        if response.status_code == 200 and data['success'] is True:
-            result_data = data['result']
-            for item in result_data['records']:
+                    records = data['result']['records']
+                    appendix = data['result']['_links']['next']
+                    all_records.extend(records)
+                    print(f"Fetching data: current entry count: {records[-1]["_id"]}")
+                    if records[-1]["_id"] == data['result']['total']:
+                        print("All data fetched successfully")
+                        break
+                else:
+                    modeladmin.message_user(request, "Failed to update", level='error')
+
+
+
+
+            for item in all_records:
                 # Update or Create Collector
                 Collector.objects.update_or_create(
                     name=item['company_name'],
@@ -29,8 +43,7 @@ def update_collectors_from_source(modeladmin, request, queryset):
                     }
                 )
             modeladmin.message_user(request, "Collectors are now up to date")
-        else:
-            modeladmin.message_user(request, "Failed to update", level='error')
+
     except Exception as e:
         modeladmin.message_user(request, f"An Error Occurred When Trying to Update Data: {str(e)}", level='error')
 
