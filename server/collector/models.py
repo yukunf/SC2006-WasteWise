@@ -8,6 +8,8 @@ class Collector(models.Model):
     phone = models.CharField(max_length=15, blank=True)
     fax = models.CharField(max_length=15, blank=True)
     licences = models.CharField(max_length=23)
+    lat = models.FloatField(null=True, blank=True)  
+    lng = models.FloatField(null=True, blank=True) 
     suspended = models.BooleanField(default=False)
 
     def __str__(self):

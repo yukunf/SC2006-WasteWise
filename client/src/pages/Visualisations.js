@@ -7,7 +7,7 @@ import Navbar_GeneralUser from "../components/NavBar_GeneralUser";
 const femaleIcon = require("../images/femaleIcon.png")
 
 const Visualisations = () => {
-    const [data, setData] = useState([]);
+    const [collectors, setCollectors] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -26,30 +26,42 @@ const Visualisations = () => {
         }
     }, [])
 
+    
+    
     useEffect(() => {
-        const datasetId = "d_26afdd562f28b4acecb400c10b70f013";
-        const url = `https://data.gov.sg/api/action/datastore_search?resource_id=${datasetId}&limit=314`;
-
-        fetch(url)
-            .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch data');
+        const fetchCollectors = async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/api/collectors`, {
+                    method: 'GET',
+                    headers: {
+                        // 'Authorization': `Token ${localStorage.getItem('token')}`, // Include the token for authentication
+                        'Content-Type': 'application/json',
+                    },
+                });
+        
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Collector details:', data);
+                    setCollectors(data)
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.error); // Display error message if retrieval fails
+                    console.error('Retrieval error:', errorData);
+                }
+            } catch (error) {
+                console.error('Error:', error);
             }
-            return response.json();
-            })
-            .then(data => {
-                setData(data.result.records);
-                setLoading(false);
-            })
-            .catch(error => {
-                setError(error);
-                setLoading(false);
-            });
-        }, []);
+        }
 
-        // if (loading) return <p className='text-center text-gray-600 italic text-lg'>Loading...</p>;
-        if (error) return <p className="text-center text-red-600 font-bold text-lg">Error fetching data: {error.message}</p>;
-        // console.log("hello my data", data);
+        fetchCollectors();
+
+    }, []);
+
+    console.log("collector", collectors)
+
+
+    // if (loading) return <p className='text-center text-gray-600 italic text-lg'>Loading...</p>;
+    if (error) return <p className="text-center text-red-600 font-bold text-lg">Error fetching data: {error.message}</p>;
 
     return (
         <div className="w-screen lg:w-full h-full">
@@ -64,7 +76,7 @@ const Visualisations = () => {
             </div> 
         </div>
         <div className="w-full">
-            <MyMap data={data} />
+            <MyMap data={collectors} />
         </div>
         <div className="mt-[1000px] lg:mt-[200px]">
             <Footer />
