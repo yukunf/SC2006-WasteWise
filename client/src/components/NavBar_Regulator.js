@@ -55,7 +55,7 @@ const Navbar_Regulator = () => {
                 <li>
                     <Link
                         to="/listreport"
-                        className={`text-lg font-semibold ${(location.pathname === '/listreport' || location.pathname === '/remove' || location.pathname === '/report') ? 'text-[#016a70]' : 'text-[#393E46]'} hover:text-[#004f57]`}
+                        className={`text-lg font-semibold ${(location.pathname === '/listreport' || location.pathname.includes('/remove') || location.pathname.includes('/report')) ? 'text-[#016a70]' : 'text-[#393E46]'} hover:text-[#004f57]`}
                     >
                         Reports
                     </Link>

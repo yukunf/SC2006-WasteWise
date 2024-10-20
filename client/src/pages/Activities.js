@@ -157,7 +157,7 @@ const Activities = () => {
                 const companyName = selectedCompany ? selectedCompany.name : "Unknown Company";
 
                 const activity = {
-                    serial_no: ratingData.length+i,
+                    serial_no: ratingData.length+i+1,
                     activity_type: "Reporting Collector",
                     content: `Reported ${companyName} (Collector ID: ${report.collector_id})`,
                     reason: report.reason,
@@ -276,9 +276,9 @@ const Activities = () => {
                                 <td className={"p-4 text-black font-semibold text-center border-[#937070] " + (index === currentActivities.length - 1 ? "border-b-0" : "border-b")}>
                                     <p className="font-light italic">
                                         {activity.remarks === 'Collector Contacted' ? 
-                                        <button className="rounded-lg bg-green-500 w-full text-white p-3 font-medium" disabled>{activity.remarks}</button> 
+                                        <button className="rounded-lg bg-[#016A70] w-full text-white p-3 font-medium" disabled>{activity.remarks}</button> 
                                         : activity.remarks === 'Pending' ? 
-                                        <button className="rounded-lg bg-gray-500 w-full text-white p-3 font-medium" disabled>{activity.remarks}</button> 
+                                        <button className="rounded-lg bg-[#BE2D08] w-full text-white p-3 font-medium" disabled>{activity.remarks}</button> 
                                         : <button className="rounded-lg bg-[#8A9394] text-white p-3 font-medium w-full" disabled>{activity.remarks}</button>} 
                                     </p>
                                 </td>
