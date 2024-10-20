@@ -11,6 +11,7 @@ const Report = () => {
     const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
     const [contacted, setContacted] = useState(false);  // State for contacted button
+    const [suspended, setSuspended] = useState(false);
 
     // Fetch the report details, including the contacted status
     useEffect(() => {
@@ -39,6 +40,8 @@ const Report = () => {
         fetchReport();
     }, [id]);
 
+    console.log("hi", report)
+
     // Function to mark the report as contacted
     const markAsContacted = async () => {
         try {
@@ -60,6 +63,38 @@ const Report = () => {
             alert('Network error. Please try again later.');
         }
     };
+
+    useEffect(() => {
+        const fetchCompanies = async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/api/collectors`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+        
+                if (response.ok) {
+                    const data = await response.json();
+                    const sp = data.find(record => record.id === report?.collector_id)?.suspended
+                    console.log(sp, 'bae what')
+                    setSuspended(sp)
+                } else {
+                    const errorData = await response.json();
+                    setErrorMessage(errorData.error); // Display error message if retrieval fails
+                    console.error('Retrieval error:', errorData);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                setErrorMessage(error); 
+            } finally {
+                setLoading(false); // Ensure loading is set to false after fetch attempt
+            }
+        }
+
+        fetchCompanies();
+
+    }, [report]);
 
     // Handle the contact button click
     const handleContact = () => {
@@ -93,11 +128,11 @@ const Report = () => {
                             <p>Email Address: {report?.user_email || 'N/A'}</p>
                         </div>
                         <button 
-                            className={`rounded-lg w-[251px] h-[52px] shadow-xl text-white p-3 font-medium ${contacted ? 'bg-gray-500' : 'bg-[#016A70]'}`} 
+                            className={`rounded-lg w-[251px] h-[52px] shadow-xl text-white p-3 font-medium ${suspended ? 'bg-[#BE2D08]' : contacted ? 'bg-gray-500' : 'bg-[#016A70]'}`} 
                             onClick={handleContact}
                             disabled={contacted}  // Disable the button if already contacted
                         >
-                            {contacted ? 'Contacted' : 'Contact'}  {/* Toggle button text */}
+                            {suspended ? 'Suspended' : contacted ? 'Contacted' : 'Contact'}  {/* Toggle button text */}
                         </button>
                     </div>
                     <div className="bg-[#D9D9D9] mt-[20px] rounded-2xl p-4">

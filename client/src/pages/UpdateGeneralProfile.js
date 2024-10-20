@@ -72,8 +72,6 @@ const UpdateGeneralProfile = () => {
         }
 
         try {
-            
-
             // Proceed to update the profile
             const response = await fetch(`http://localhost:8000/api/users/${localStorage.getItem('user_id')}/update/`, {
                 method: 'PATCH',
@@ -91,8 +89,10 @@ const UpdateGeneralProfile = () => {
 
             if (response.ok) {
                 setSuccessMessage(true); 
-                setTimeout(() => setSuccessMessage(false), 3000);
-                navigate("/GeneralProfilePage");
+                setTimeout(() => {
+                    setSuccessMessage(false);
+                    navigate("/GeneralProfilePage");
+                }, 3000);
             } else {
                 const errorData = await response.json();
                 setError(errorData.error);
