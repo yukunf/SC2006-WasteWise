@@ -181,7 +181,7 @@ const Activities = () => {
                         const formattedHours = hours.toString().padStart(2, '0'); // Pad hours if needed
                         return `${day} ${month} ${year} ${formattedHours}:${minutes}${period}`;
                     })(),
-                    remarks: "NIL"
+                    remarks: report.contacted ? "Collector Contacted" : "Pending"
                 };
 
                 combinedData.push(activity);
@@ -261,27 +261,29 @@ const Activities = () => {
                     currentActivities.length > 0 &&
                 
                     <tbody>
-                    {currentActivities.map((activity, index) => (
-                        <tr key={index}>
-                            <td className={"p-4 text-black font-semibold border-r border-[#937070] " + (index === currentActivities.length - 1 ? "border-b-0" : "border-b")}>{activity.serial_no}</td>
-                            <td className={"p-4 text-black font-semibold border-r border-[#937070] " + (index === currentActivities.length - 1 ? "border-b-0" : "border-b")}>{activity.activity_type}</td>
-                            <td className={"p-4 text-black font-semibold w-[40%] border-r border-[#937070] " + (index === currentActivities.length - 1 ? "border-b-0" : "border-b")}>{activity.content}
-                                <p className="font-light italic">
-                                    {activity.activity_type === 'Reporting Collector' ? 
-                                    <p>Reason: {activity.reason}<br />Comments: {activity.comments}</p> : activity.activity_type === 'Rating Collector' ? 
-                                    <p>Rating: {activity.rating}/5<br />Comments: {activity.comments}</p>  : 'N/A'} 
-                                </p>
-                            </td>
-                            <td className={"p-4 text-black text-center border-b border-r border-[#937070] " + (index === currentActivities.length - 1 ? "border-b-0" : "border-b")}>{activity.datetime}</td>
-                            <td className={"p-4 text-black font-semibold text-center border-[#937070] " + (index === currentActivities.length - 1 ? "border-b-0" : "border-b")}>
-                                <p className="font-light italic">
-                                    {activity.remarks === 'Not Contacted' ? 
-                                    <button className="rounded-lg bg-[#BE2D08] w-full text-white p-3 font-medium" disabled>{activity.remarks}</button> : activity.remarks === 'Contacted' ? 
-                                    <button className="rounded-lg bg-[#016A70] w-full text-white p-3 font-medium" disabled>{activity.remarks}</button> : <button className="rounded-lg bg-[#8A9394] text-white p-3 font-medium w-full" disabled>{activity.remarks}</button>} 
-                                </p>
-                            </td>
-                        </tr>
-                    ))} 
+                        {currentActivities.map((activity, index) => (
+                            <tr key={index}>
+                                <td className={"p-4 text-black font-semibold border-r border-[#937070] " + (index === currentActivities.length - 1 ? "border-b-0" : "border-b")}>{activity.serial_no}</td>
+                                <td className={"p-4 text-black font-semibold border-r border-[#937070] " + (index === currentActivities.length - 1 ? "border-b-0" : "border-b")}>{activity.activity_type}</td>
+                                <td className={"p-4 text-black font-semibold w-[40%] border-r border-[#937070] " + (index === currentActivities.length - 1 ? "border-b-0" : "border-b")}>{activity.content}
+                                    <p className="font-light italic">
+                                        {activity.activity_type === 'Reporting Collector' ? 
+                                        <p>Reason: {activity.reason}<br />Comments: {activity.comments}</p> : activity.activity_type === 'Rating Collector' ? 
+                                        <p>Rating: {activity.rating}/5<br />Comments: {activity.comments}</p>  : 'N/A'} 
+                                    </p>
+                                </td>
+                                <td className={"p-4 text-black text-center border-b border-r border-[#937070] " + (index === currentActivities.length - 1 ? "border-b-0" : "border-b")}>{activity.datetime}</td>
+                                <td className={"p-4 text-black font-semibold text-center border-[#937070] " + (index === currentActivities.length - 1 ? "border-b-0" : "border-b")}>
+                                    <p className="font-light italic">
+                                        {activity.remarks === 'Collector Contacted' ? 
+                                        <button className="rounded-lg bg-green-500 w-full text-white p-3 font-medium" disabled>{activity.remarks}</button> 
+                                        : activity.remarks === 'Pending' ? 
+                                        <button className="rounded-lg bg-gray-500 w-full text-white p-3 font-medium" disabled>{activity.remarks}</button> 
+                                        : <button className="rounded-lg bg-[#8A9394] text-white p-3 font-medium w-full" disabled>{activity.remarks}</button>} 
+                                    </p>
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 }
 
