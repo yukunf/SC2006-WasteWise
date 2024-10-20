@@ -8,22 +8,37 @@ import Navbar_PublicUser from "../components/NavBar_PublicUser";
 
 const AfterFilter = () => {
     const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
     const [filteredData, setFilteredData] = useState([]);
 
     const location = useLocation();
     const { searchAddress, selectedClasses } = location.state || { searchAddress: '', selectedClasses: [] }; // Handle undefined state
 
-    // Fetch the data from API
     useEffect(() => {
-        const datasetId = "d_26afdd562f28b4acecb400c10b70f013";
-        const url = `https://data.gov.sg/api/action/datastore_search?resource_id=${datasetId}&limit=314`;
+        const fetchCollectors = async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/api/collectors`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+        
+                if (response.ok) {
+                    const data = await response.json();
+                    setData(data)
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.error); // Display error message if retrieval fails
+                    console.error('Retrieval error:', errorData);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
 
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                setData(data.result.records);
-            })
-            .catch(error => console.error("Error fetching data:", error));
+        fetchCollectors();
+
     }, []);
 
     // Apply filters based on address and license class
@@ -33,14 +48,14 @@ const AfterFilter = () => {
         // Filter by address (partial match)
         if (searchAddress) {
             filtered = filtered.filter(company =>
-                company.company_address.toLowerCase().includes(searchAddress.toLowerCase())
+                company.address.toLowerCase().includes(searchAddress.toLowerCase())
             );
         }
 
         // Filter by class of license
         if (selectedClasses.length > 0) {
             filtered = filtered.filter(company => {
-                const companyClasses = company.class_of_licence.split(",");
+                const companyClasses = company.licences.split(",");
                 return selectedClasses.every(cls => companyClasses.includes(cls));
             });
         }
@@ -92,8 +107,8 @@ const AfterFilter = () => {
                 {filteredData.length > 0 ? (
                     filteredData.map((company, index) => (
                     <div key={index} className="border-b border-gray-300 py-2 px-12">
-                        <Link to={`/display/${company._id}`}>
-                            {company.company_name}
+                        <Link to={`/display/${company.id}`}>
+                            {company.name}
                         </Link>
                     </div>
                     ))

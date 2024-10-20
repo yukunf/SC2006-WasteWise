@@ -4,64 +4,6 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import Navbar_GeneralUser from "../components/NavBar_GeneralUser";
 
 const Activities = () => {
-
-    const reportArray = [
-        {
-            serial_no : 1,
-            activity_type : "Reporting Collector",
-            content : "Reported E Waste123",
-            reason : "E Waste 123 took a long time before processing my request. \
-                        They also only informed on the spot on some of the items not being able to proceed. Bad service.",
-            datetime : "27 August 2024 \
-                          16:21PM",
-            remarks : "Contacted"
-        },
-        // {
-        //     serial_no : 2,
-        //     activity_type : "Rating Collector",
-        //     content : "Rated 800 SUPER WASTE MGMT PTE LTD",
-        //     rating: 4,
-        //     comments: "Good service, hassle-free!!",
-        //     datetime : "28 August 2024 \
-        //                   13:43PM",
-        //     remarks : "NIL"
-        // },
-        // {
-        //     serial_no : 3,
-        //     activity_type : "Rating Collector",
-        //     content : "Rated AEON EARTH PTE LTD",
-        //     rating: 3,
-        //     comments: "Did the work as commissioned, however, the process could have been smoother if they were a little less rude :(",
-        //     datetime : "31 August 2024 \
-        //                   10:11AM",
-        //     remarks : "NIL"
-        // },
-        {
-            serial_no : 4,
-            activity_type : "Reporting Collector",
-            content : "Reported Wasteboo",
-            reason : "Wasteboo bailed on me at the last minute. \
-                      Process was very messy, took very while to inform me that they couldn’t make it ???? BAD SERVICE !! :((",
-            datetime : "2 September 2024 \
-                          20:21PM",
-            remarks : "Not Contacted"
-        },
-        // {
-        //     serial_no : 5,
-        //     activity_type : "Rating Collector",
-        //     content : "Rated CP",
-        //     rating: 0,
-        //     comments : "You just want attention. \
-        //               I knew from the start, \
-        //               you're just making sure I'm never gettin' over you :((",
-        //     datetime : "30 September 2024 \
-        //                   19:37PM",
-        //     remarks : "NIL"
-        // },
-    ]
-
-    
-
     const [ratingData, setRatingData] = useState(null);
     const [reportData, setReportData] = useState(null);
     const [error, setError] = useState(null);

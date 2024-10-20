@@ -4,7 +4,6 @@ import Navbar_PublicUser from "../components/NavBar_PublicUser";
 import Navbar_GeneralUser from "../components/NavBar_GeneralUser"; 
 
 const Display = () => {
-    const { name } = useParams();  // Get the company name from the URL params
     const [companyInfo, setCompanyInfo] = useState(null);
     const [ratingsData, setRatingsData] = useState([]);  // Array to hold rating objects
     const [averageRating, setAverageRating] = useState(0);  // Separate state for average rating
@@ -13,7 +12,9 @@ const Display = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     const navigateToPrev = useNavigate();
-    const datasetId = "d_26afdd562f28b4acecb400c10b70f013";  // Replace with your actual dataset ID
+
+    const { id } = useParams()
+
 
     // Check if the user is authenticated
     useEffect(() => {
@@ -21,35 +22,55 @@ const Display = () => {
         setIsAuthenticated(!!token);
     }, []);
 
-    // Fetch the company data
+    // Fetch the specific collector data
     useEffect(() => {
-        const fetchCompanies = async () => {
+        const fetchCollector = async () => {
             try {
-                const response = await fetch(`https://data.gov.sg/api/action/datastore_search?resource_id=${datasetId}&limit=314`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch data');
+                const response = await fetch(`http://localhost:8000/api/collectors`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+        
+                if (response.ok) {
+                    const data = await response.json();
+                    const selectedCollector = data.find(collector => collector.id === parseInt(id, 10))
+                    if (selectedCollector) {
+                        setCompanyInfo(selectedCollector)
+                    }
+                    else {
+                        setError('Collector not found'); 
+                    }
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.error); // Display error message if retrieval fails
+                    console.error('Retrieval error:', errorData);
                 }
-                const data = await response.json();
-                setCompanyInfo(data.result.records.find(c => c.company_name === decodeURIComponent(name)));
             } catch (error) {
-                setError(error);
+                console.error('Error:', error);
+                setError(error); 
             } finally {
-                setLoading(false);
+                setLoading(false); // Ensure loading is set to false after fetch attempt
             }
-        };
+        }
 
-        fetchCompanies();
-    }, [name]);
+        fetchCollector();
+
+    }, []);
 
     // Fetch ratings and comments based on collectorID (no authentication required)
     useEffect(() => {
         const fetchRatings = async () => {
             if (!companyInfo) return;  // Don't fetch if companyInfo is not set
 
+
             try {
-                const response = await fetch(`http://localhost:8000/api/ratings/collector/${companyInfo._id}/`);  // No Authorization header
+                const response = await fetch(`http://localhost:8000/api/ratings/collector/${companyInfo.id}/`);  // No Authorization header
                 if (!response.ok) {
-                    throw new Error('Failed to fetch ratings');
+                    // means there are no ratings associated with this collector yet
+                    setRatingsData([])
+                    // throw new Error('Failed to fetch ratings');
                 }
                 const ratingsData = await response.json();
                 setRatingsData(ratingsData);  // Set the fetched ratings
@@ -86,7 +107,7 @@ const Display = () => {
 
             {/* Company Name */}
             <div className="flex justify-center mt-10">
-                <h2 className="text-lg font-semibold">{companyInfo ? companyInfo.company_name : 'No company found'}</h2>
+                <h2 className="text-lg font-semibold">{companyInfo ? companyInfo.name : 'No company found'}</h2>
             </div>
             
             {/* Company Information Table */}
@@ -96,15 +117,15 @@ const Display = () => {
                         <tbody>
                             <tr>
                                 <td className="border-b py-2 font-bold">Contact Number</td>
-                                <td className="border-b py-2">{companyInfo ? companyInfo.telephone_no : 'N/A'}</td>
+                                <td className="border-b py-2">{companyInfo ? companyInfo.phone : 'N/A'}</td>
                             </tr>
                             <tr>
                                 <td className="border-b py-2 font-bold">Address</td>
-                                <td className="border-b py-2">{companyInfo ? companyInfo.company_address : 'N/A'}</td>
+                                <td className="border-b py-2">{companyInfo ? companyInfo.address : 'N/A'}</td>
                             </tr>
                             <tr>
                                 <td className="border-b py-2 font-bold">Class of Licence</td>
-                                <td className="border-b py-2">{companyInfo ? companyInfo.class_of_licence : 'N/A'}</td>
+                                <td className="border-b py-2">{companyInfo ? companyInfo.licences : 'N/A'}</td>
                             </tr>
                             <tr>
                                 <td className="border-b py-2 font-bold">Ratings</td>

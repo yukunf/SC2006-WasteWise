@@ -29,25 +29,32 @@ const Search = () => {
     }, [])
 
     useEffect(() => {
-        const datasetId = "d_26afdd562f28b4acecb400c10b70f013";
-        const url = `https://data.gov.sg/api/action/datastore_search?resource_id=${datasetId}&limit=314`;
-
-        fetch(url)
-            .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch data');
+        const fetchCollectors = async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/api/collectors`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+        
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Collector details:', data);
+                    setCompanies(data)
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.error); // Display error message if retrieval fails
+                    console.error('Retrieval error:', errorData);
+                }
+            } catch (error) {
+                console.error('Error:', error);
             }
-            return response.json();
-            })
-            .then(companies => {
-                setCompanies(companies.result.records);
-                setLoading(false);
-            })
-            .catch(error => {
-                setError(error);
-                setLoading(false);
-            });
-        }, []);
+        }
+
+        fetchCollectors();
+
+    }, []);
 
         // if (loading) return <p className='text-center text-gray-600 italic text-lg'>Loading...</p>;
         if (error) return <p className="text-center text-red-600 font-bold text-lg">Error fetching data: {error.message}</p>;
@@ -58,7 +65,7 @@ const Search = () => {
 
         if (value) {
             const filteredResults = companies.filter(company =>
-                company.company_name.toLowerCase().includes(value.toLowerCase())
+                company.name.toLowerCase().includes(value.toLowerCase())
             );
             setResults(filteredResults);
         } else {
@@ -132,7 +139,7 @@ const Search = () => {
                         {results.length > 0 ? (
                             results.map((result, index) => (
                                 <div key={index} className="border-b border-gray-300 py-2 px-12">
-                                    <Link to={`/display/${result._id}`}>{result.company_name}</Link>
+                                    <Link to={`/display/${result.id}`}>{result.name}</Link>
                                 </div>
                             ))
                         ) : (
