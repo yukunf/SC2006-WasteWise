@@ -10,9 +10,6 @@ const Rating = () => {
     const [error, setError] = useState(null);
     const [collectorId, setCollectorId] = useState(""); // Store the collector ID
 
-    // const getCSRFToken = () => {
-    //     return document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
-    // };
     
     const handleStarClick = (index) => {
         setRating(index);
@@ -26,25 +23,38 @@ const Rating = () => {
     useEffect(() => {
         const fetchCompanies = async () => {
             try {
-                const response = await fetch('https://data.gov.sg/api/action/datastore_search?resource_id=d_26afdd562f28b4acecb400c10b70f013&limit=314');
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                const response = await fetch(`http://localhost:8000/api/collectors`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+        
+                if (response.ok) {
+                    const data = await response.json();
+                    // console.log('Collector details:', data);
+                    const companyDetails = data.map(record => ({
+                        id: record.id,
+                        name: record.name,
+                    }));
+                    setCompanies(companyDetails)
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.error); // Display error message if retrieval fails
+                    console.error('Retrieval error:', errorData);
                 }
-                const json = await response.json();
-                const companyData = json.result.records.map(record => ({
-                    id: record._id,  // Replace with the actual ID key from your API
-                    name: record.company_name
-                }));
-                setCompanies(companyData);
-            } catch (err) {
-                setError(err);
+            } catch (error) {
+                console.error('Error:', error);
+                setError(error); 
             } finally {
-                setLoading(false);
+                setLoading(false); // Ensure loading is set to false after fetch attempt
             }
-        };
+        }
 
         fetchCompanies();
+
     }, []);
+    
     const handleSubmit = async () => {
         const comments = document.querySelector('textarea').value;
     
@@ -86,6 +96,9 @@ const Rating = () => {
             alert('An error occurred while submitting the rating.');
         }
     };
+
+    // console.log("companies id", companies)
+    console.log("col id", collectorId)
     
     
     

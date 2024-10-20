@@ -31,44 +31,36 @@ const CollectorRegistration = () => {
     useEffect(() => {
         const fetchCompanies = async () => {
             try {
-                const response = await fetch('https://data.gov.sg/api/action/datastore_search?resource_id=d_26afdd562f28b4acecb400c10b70f013&limit=314');
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                const response = await fetch(`http://localhost:8000/api/collectors`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+        
+                if (response.ok) {
+                    const data = await response.json();
+                    const companyDetails = data.map(record => ({
+                        id: record.id,
+                        name: record.name,
+                    }));
+                    setCompanies(companyDetails)
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.error); // Display error message if retrieval fails
+                    console.error('Retrieval error:', errorData);
                 }
-                const json = await response.json();
-                // const companyNames = json.result.records.map(record => record.company_name); // Adjust the key based on the actual data structure
-                const companyDetails = json.result.records.map(record => ({
-                    id: record._id, // Assuming the ID is included
-                    name: record.company_name,
-                }));
-                setCompanies(companyDetails);
-            } catch (err) {
-                setError(err);
+            } catch (error) {
+                console.error('Error:', error);
+                setError(error); 
             } finally {
-                setLoading(false);
+                setLoading(false); // Ensure loading is set to false after fetch attempt
             }
-        };
+        }
 
         fetchCompanies();
+
     }, []);
-
-    // Fetch existing collector IDs
-    // useEffect(() => {
-    //     const fetchExistingIds = async () => {
-    //         try {
-    //             const response = await fetch('http://localhost:8000/api/collectors/'); // Adjust the endpoint as necessary
-    //             if (response.ok) {
-    //                 const data = await response.json();
-    //                 const ids = data.map(collector => collector.collector_id); // Adjust based on your data structure
-    //                 setExistingCollectorIds(ids);
-    //             }
-    //         } catch (error) {
-    //             console.error('Error fetching existing collector IDs:', error);
-    //         }
-    //     };
-
-    //     fetchExistingIds();
-    // }, []);
 
 
     const handleChange = (e) => {
@@ -78,15 +70,6 @@ const CollectorRegistration = () => {
             [name]: type === 'checkbox' ? checked : value // Handle checkbox separately
         });
     };
-
-    // generate a unique collector ID
-    // const generateUniqueCollectorId = (existingIds) => {
-    //     let uniqueId;
-    //     do {
-    //         uniqueId = Math.floor(Math.random() * 1000000); 
-    //     } while (existingIds.includes(uniqueId));
-    //     return uniqueId;
-    // };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -102,7 +85,7 @@ const CollectorRegistration = () => {
             return;
         }
 
-        // const uniqueCollectorId = generateUniqueCollectorId(existingCollectorIds);
+        
         const selectedCompany = companies.find(company => company.name === formData.collector_company);
         console.log("s", selectedCompany, "id:", selectedCompany.id)
         const uniqueCollectorId = selectedCompany ? selectedCompany.id : -1;

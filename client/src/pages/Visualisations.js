@@ -34,7 +34,6 @@ const Visualisations = () => {
                 const response = await fetch(`http://localhost:8000/api/collectors`, {
                     method: 'GET',
                     headers: {
-                        // 'Authorization': `Token ${localStorage.getItem('token')}`, // Include the token for authentication
                         'Content-Type': 'application/json',
                     },
                 });

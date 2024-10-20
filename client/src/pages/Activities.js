@@ -63,15 +63,41 @@ const Activities = () => {
     
 
     const [ratingData, setRatingData] = useState(null);
+    const [reportData, setReportData] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [companies, setCompanies] = useState([]);
     const [data, setData] = useState([]); // Use state to hold combined data
 
+    useEffect(() => {
+        const fetchReport = async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/api/reports/list`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Token ${localStorage.getItem('token')}`, // Include the token for authentication
+                        'Content-Type': 'application/json',
+                    },
+                });
+        
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('report details:', data);
+                    const filteredReports = data.filter(report => report.userID === Number(localStorage.getItem('user_id')))
+                    setReportData(filteredReports)
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.error); // Display error message if retrieval fails
+                    console.error('Retrieval error:', errorData);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
 
-    // const getCSRFToken = () => {
-    //     return document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
-    // };
+        fetchReport();
+
+    }, []);
 
     useEffect(() => {
         const fetchRating = async () => {
@@ -79,7 +105,6 @@ const Activities = () => {
                 const response = await fetch(`http://localhost:8000/api/ratings/${localStorage.getItem('user_id')}`, {
                     method: 'GET',
                     headers: {
-                        // 'X-CSRFToken': getCSRFToken(),
                         'Authorization': `Token ${localStorage.getItem('token')}`, // Include the token for authentication
                         'Content-Type': 'application/json',
                     },
@@ -89,7 +114,6 @@ const Activities = () => {
                     const data = await response.json();
                     console.log('rating details:', data);
                     setRatingData(data)
-                    // setFullName(`${data.first_name} ${data.last_name}`);
                 } else {
                     const errorData = await response.json();
                     setError(errorData.error); // Display error message if retrieval fails
@@ -107,68 +131,45 @@ const Activities = () => {
     useEffect(() => {
         const fetchCompanies = async () => {
             try {
-                const response = await fetch('https://data.gov.sg/api/action/datastore_search?resource_id=d_26afdd562f28b4acecb400c10b70f013&limit=314');
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                const response = await fetch(`http://localhost:8000/api/collectors`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+        
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Collector details:', data);
+                    const companyDetails = data.map(record => ({
+                        id: record.id,
+                        name: record.name,
+                    }));
+                    setCompanies(companyDetails)
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.error); // Display error message if retrieval fails
+                    console.error('Retrieval error:', errorData);
                 }
-                const json = await response.json();
-                // const companyNames = json.result.records.map(record => record.company_name); // Adjust the key based on the actual data structure
-                const companyDetails = json.result.records.map(record => ({
-                    id: record._id, // Assuming the ID is included
-                    name: record.company_name,
-                }));
-                setCompanies(companyDetails);
-            } catch (err) {
-                setError(err);
-            } finally {
-                setLoading(false);
+            } catch (error) {
+                console.error('Error:', error);
             }
-        };
+        }
 
         fetchCompanies();
-    }, []);    
+
+    }, []);
 
     console.log("rating", ratingData)
-
-    // const data = []
-
-    // if (!ratingData) {
-    //     for (let i = 0; i < ratingData.length; i++) {
-    //         const rating = ratingData[i];
-    
-    //         // Find the selected company based on the collectorID
-    //         const selectedCompany = companies.find(company => company.id === rating.collectorID);
-    
-    //         // Prepare the content string
-    //         const companyName = selectedCompany ? selectedCompany.name : "Unknown Company"; // Adjust this line based on your company structure
-    
-    //         // Create the activity object for the rating
-    //         const activity = {
-    //             serial_no: rating.id, // serial_no based on current length
-    //             activity_type: "Rating Collector",
-    //             content: `Rated ${companyName} (Collector ID: ${rating.collectorID})`, // Updated content with company name
-    //             rating: rating.rating,
-    //             comments: rating.comments,
-    //             datetime: new Date(rating.created_at).toLocaleString(), // Format the date
-    //             remarks: "NIL" // Default remarks if needed
-    //         };
-    
-    //         // Push the activity into combinedData
-    //         data.push(activity);
-    //     }
-    // }
+    console.log("report", reportData)
+    console.log("company", companies)
 
     // Combine rating data and reporting activities
     useEffect(() => {
         if (ratingData && companies.length > 0) {
             const combinedData = [];
 
-            // Include reporting activities
-            reportArray.forEach(activity => {
-                combinedData.push(activity);
-            });
-
-            // Include rating activities
+            // rating activities
             for (let i = 0; i < ratingData.length; i++) {
                 const rating = ratingData[i];
 
@@ -200,7 +201,44 @@ const Activities = () => {
                         const formattedHours = hours.toString().padStart(2, '0'); // Pad hours if needed
                         return `${day} ${month} ${year} ${formattedHours}:${minutes}${period}`;
                     })(),
-                    // datetime: new Date(rating.created_at).toLocaleString(),
+                    remarks: "NIL"
+                };
+
+                combinedData.push(activity);
+            }
+
+            // report activities
+            for (let i = 0; i < reportData.length; i++) {
+                const report = reportData[i];
+
+                const selectedCompany = companies.find(company => company.id === report.collector_id);
+                const companyName = selectedCompany ? selectedCompany.name : "Unknown Company";
+
+                const activity = {
+                    serial_no: ratingData.length+i,
+                    activity_type: "Reporting Collector",
+                    content: `Reported ${companyName} (Collector ID: ${report.collector_id})`,
+                    reason: report.reason,
+                    comments: report.comments,
+                    datetime: (() => {
+                        const date = new Date(report.created_at);
+                        const day = date.getDate(); // Get the day
+                        const month = date.toLocaleString('en-US', { month: 'long' }); // Get full month name
+                        const year = date.getFullYear(); // Get the year
+                        let hours = date.getHours(); // Get hours (24-hour format)
+                        const minutes = date.getMinutes().toString().padStart(2, '0'); // Pad minutes with '0' if needed
+                        const period = hours >= 12 ? 'PM' : 'AM'; // Determine AM or PM
+                    
+                        if (hours > 12) {
+                            hours -= 12; // Convert to 12-hour format
+                        }
+                        if (hours === 0) {
+                            hours = 12; // Handle midnight (00:00)
+                        }
+                        
+                        const formattedHours = hours.toString().padStart(2, '0'); // Pad hours if needed
+                        return `${day} ${month} ${year} ${formattedHours}:${minutes}${period}`;
+                    })(),
                     remarks: "NIL"
                 };
 
@@ -288,7 +326,7 @@ const Activities = () => {
                             <td className={"p-4 text-black font-semibold w-[40%] border-r border-[#937070] " + (index === currentActivities.length - 1 ? "border-b-0" : "border-b")}>{activity.content}
                                 <p className="font-light italic">
                                     {activity.activity_type === 'Reporting Collector' ? 
-                                    <p>Reason: {activity.reason}</p> : activity.activity_type === 'Rating Collector' ? 
+                                    <p>Reason: {activity.reason}<br />Comments: {activity.comments}</p> : activity.activity_type === 'Rating Collector' ? 
                                     <p>Rating: {activity.rating}/5<br />Comments: {activity.comments}</p>  : 'N/A'} 
                                 </p>
                             </td>
