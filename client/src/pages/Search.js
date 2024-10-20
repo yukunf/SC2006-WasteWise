@@ -41,7 +41,9 @@ const Search = () => {
                 if (response.ok) {
                     const data = await response.json();
                     console.log('Collector details:', data);
-                    setCompanies(data)
+                    const collectorDetails = data.filter(record => record.suspended === false)
+                    console.log('Collector details (without suspended):', collectorDetails);
+                    setCompanies(collectorDetails)
                 } else {
                     const errorData = await response.json();
                     setError(errorData.error); // Display error message if retrieval fails

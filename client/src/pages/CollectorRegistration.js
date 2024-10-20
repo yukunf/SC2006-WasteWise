@@ -40,10 +40,12 @@ const CollectorRegistration = () => {
         
                 if (response.ok) {
                     const data = await response.json();
-                    const companyDetails = data.map(record => ({
+                    console.log("data", data)
+                    const companyDetails = data.filter(record => record.suspended === false).map(record => ({
                         id: record.id,
                         name: record.name,
                     }));
+                    console.log("data2", companyDetails)
                     setCompanies(companyDetails)
                 } else {
                     const errorData = await response.json();

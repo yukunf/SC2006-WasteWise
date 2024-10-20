@@ -60,7 +60,9 @@ const UserReport = () => {
                 if (response.ok) {
                     const data = await response.json();
                     console.log('Collector details:', data);
-                    const companyDetails = data.map(record => ({
+                    const filteredData = data.filter(record => record.suspended === false)
+                    console.log('Filtered details:', filteredData);
+                    const companyDetails = filteredData.map(record => ({
                         id: record.id,  // Store only collector ID
                         name: record.name,  // Store collector name
                         address: record.address,

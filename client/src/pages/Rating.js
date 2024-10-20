@@ -32,11 +32,8 @@ const Rating = () => {
         
                 if (response.ok) {
                     const data = await response.json();
-                    // console.log('Collector details:', data);
-                    const companyDetails = data.map(record => ({
-                        id: record.id,
-                        name: record.name,
-                    }));
+                    const companyDetails = data.filter(record => record.suspended === false)
+                    console.log('Collector details (without suspended):', companyDetails);
                     setCompanies(companyDetails)
                 } else {
                     const errorData = await response.json();
