@@ -41,21 +41,18 @@ const CollectorProfilePage = () => {
     return (
         <div className="relative h-[35vh] flex flex-col lg:flex-row bg-[#016a70]" style={{ paddingLeft: "10%", paddingRight: "10%", paddingTop: "50px" }}>
             <Navbar_Collector />
-        <div className="absolute mt-[400px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white shadow-lg p-10 rounded-lg w-[950px] h-[600px] border border-gray-300 font-poppins text-left">
+        <div className="absolute mt-[430px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white shadow-lg p-10 rounded-lg w-[950px] h-[600px] border border-gray-300 font-poppins text-left">
         {collector.map((c, index) => (
-            <div className="flex justify-between items-start">
-                <div className="w-[220px] h-[220px] flex items-center justify-center border border-gray-500 ml-auto">
-                Company logo
-                </div>
-                <div className="absolute top-10 left-20">
+            <div className="flex flex-col justify-start">
+                <div>
                     <h1 className="text-4xl font-bold text-[#016A70]">Profile</h1>
                     <div className="text-base font-semibold mt-9 flex justify-between gap-4 w-full">Collector Name</div>
                     <div className="flex justify-between gap-4 text-sm border-2 rounded-md w-full p-1.5 mt-1 pl-3">{c.name}</div>
-                    <h5 className="text-base font-semibold mt-3">Address</h5>
+                    <h5 className="text-base font-semibold mt-4">Address</h5>
                     <div className="text-sm border-2 rounded-md w-full p-1.5 mt-1 pl-3">{c.address}</div>
-                    <h5 className="text-base font-semibold mt-3">Contact Number</h5>
+                    <h5 className="text-base font-semibold mt-4">Contact Number</h5>
                     <div className="text-sm border-2 rounded-md w-full p-1.5 mt-1 pl-3">{c.phone != "" ? c.phone: c.fax}</div>
-                    <h5 className="text-base font-semibold mt-3">License Grade</h5>
+                    <h5 className="text-base font-semibold mt-4">License Grade</h5>
                     <div className="text-sm border-2 rounded-md w-[550px] p-1.5 mt-1">
                         <div className="flex justify-between gap-4">
                             <div className={`w-full text-center border-2 rounded-md p-2 ${c.licences.includes('A') ? "bg-[#016a70] text-white" : "bg-white"}`}> A</div>
@@ -64,7 +61,7 @@ const CollectorProfilePage = () => {
                         </div>
                     </div>
                 
-                    <div className="flex justify-end gap-8 mt-7">
+                    <div className="flex justify-end gap-8 mt-20">
                         <Link to="/UpdateCollectorProfile" className="bg-[#016A70] hover:bg-teal-800 text-white py-2 px-9 rounded text-base font-semibold">Update Profile</Link>
                     </div>
                 </div>
