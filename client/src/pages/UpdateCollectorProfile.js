@@ -94,10 +94,6 @@ const UpdateCollectorProfile = () => {
                     </h5>
                     <input type="contact" className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your contact number"/>
                     <h5 className="text-base font-semibold mt-3">
-                        Opening Hours
-                    </h5>
-                    <input type="opening" className="text-sm border-2 rounded-md w-[550px] p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your opening hours"/>
-                    <h5 className="text-base font-semibold mt-3">
                         License Grade
                     </h5>
                     <div className="text-sm border-2 rounded-md w-[550px] p-1.5 mt-1">
