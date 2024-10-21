@@ -9,6 +9,7 @@ const Remove = () => {
     const [loading, setLoading] = useState(false);
     const [removalReason, setRemovalReason] = useState('');  // Capture the reason for removal
     const { id } = useParams();  // Extract report ID from URL
+    const [completed, setCompleted] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -39,13 +40,33 @@ const Remove = () => {
         fetchReport();
     }, [id]);  // Re-run the effect if id changes
 
+    const markAsCompleted = async () => {
+        try {
+            const response = await fetch(`http://localhost:8000/api/reports/${id}/complete/`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.ok) {
+                setCompleted(true);  // Update local state to disable the button
+            } else {
+                alert('Failed to mark as completed');
+            }
+        } catch (error) {
+            alert('Network error. Please try again later.');
+        }
+    };
+
     const handleRemove = async () => {
         setErrorMessage('');  // Clear previous errors
         setLoading(true);  // Start loader
 
         try {
-            const response = await fetch('/api/collectors/remove/', {
-                method: 'POST',
+            const response = await fetch(`http://localhost:8000/api/collectors/${report.collector_id}/suspend/`, {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,  // Send user token if needed
@@ -58,6 +79,8 @@ const Remove = () => {
 
             if (response.ok) {
                 alert('Collector removed successfully');
+                // Call the function to mark the report as completed after successful removal
+                await markAsCompleted();
                 navigate('/listreport');  // Redirect to the list of reports
             } else {
                 setErrorMessage('Failed to remove the collector.');
