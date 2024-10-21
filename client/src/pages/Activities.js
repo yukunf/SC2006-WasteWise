@@ -20,12 +20,12 @@ const Activities = () => {
                         'Content-Type': 'application/json',
                     },
                 });
-        
+
                 if (response.ok) {
                     const data = await response.json();
                     console.log('report details:', data);
-                    const filteredReports = data.filter(report => report.userID === Number(localStorage.getItem('user_id')))
-                    setReportData(filteredReports)
+                    const filteredReports = data.filter(report => report.userID === Number(localStorage.getItem('user_id')));
+                    setReportData(filteredReports);
                 } else {
                     const errorData = await response.json();
                     setError(errorData.error); // Display error message if retrieval fails
@@ -34,10 +34,9 @@ const Activities = () => {
             } catch (error) {
                 console.error('Error:', error);
             }
-        }
+        };
 
         fetchReport();
-
     }, []);
 
     useEffect(() => {
@@ -50,11 +49,11 @@ const Activities = () => {
                         'Content-Type': 'application/json',
                     },
                 });
-        
+
                 if (response.ok) {
                     const data = await response.json();
                     console.log('rating details:', data);
-                    setRatingData(data)
+                    setRatingData(data);
                 } else {
                     const errorData = await response.json();
                     setError(errorData.error); // Display error message if retrieval fails
@@ -63,10 +62,9 @@ const Activities = () => {
             } catch (error) {
                 console.error('Error:', error);
             }
-        }
+        };
 
         fetchRating();
-
     }, []);
 
     useEffect(() => {
@@ -78,7 +76,7 @@ const Activities = () => {
                         'Content-Type': 'application/json',
                     },
                 });
-        
+
                 if (response.ok) {
                     const data = await response.json();
                     console.log('Collector details:', data);
@@ -87,7 +85,7 @@ const Activities = () => {
                         name: record.name,
                         suspended: record.suspended,  // Include the suspended status
                     }));
-                    setCompanies(companyDetails)
+                    setCompanies(companyDetails);
                 } else {
                     const errorData = await response.json();
                     setError(errorData.error); // Display error message if retrieval fails
@@ -96,10 +94,9 @@ const Activities = () => {
             } catch (error) {
                 console.error('Error:', error);
             }
-        }
+        };
 
         fetchCompanies();
-
     }, []);
 
     // Combine rating and report activities
@@ -130,9 +127,10 @@ const Activities = () => {
 
                         if (hours > 12) hours -= 12;
                         if (hours === 0) hours = 12;
-                        
+
                         return `${day} ${month} ${year} ${hours.toString().padStart(2, '0')}:${minutes}${period}`;
                     })(),
+                    // Set the remarks with the priority logic
                     remarks: selectedCompany?.suspended ? "Collector Suspended" : "NIL"
                 };
 
@@ -144,6 +142,15 @@ const Activities = () => {
                 const report = reportData[i];
                 const selectedCompany = companies.find(company => company.id === report.collector_id);
                 const companyName = selectedCompany ? selectedCompany.name : "Unknown Company";
+
+                // Prioritize the remarks based on the following order: Suspended > Completed > Contacted > Pending > NIL
+                const remarks = selectedCompany?.suspended
+                    ? "Collector Suspended"
+                    : report.completed
+                    ? "Completed"
+                    : report.contacted
+                    ? "Collector Contacted"
+                    : "Pending";
 
                 const activity = {
                     serial_no: ratingData.length + i + 1,
@@ -162,10 +169,10 @@ const Activities = () => {
 
                         if (hours > 12) hours -= 12;
                         if (hours === 0) hours = 12;
-                        
+
                         return `${day} ${month} ${year} ${hours.toString().padStart(2, '0')}:${minutes}${period}`;
                     })(),
-                    remarks: selectedCompany?.suspended ? "Collector Suspended" : (report.contacted ? "Collector Contacted" : "Pending")
+                    remarks
                 };
 
                 combinedData.push(activity);
@@ -253,6 +260,8 @@ const Activities = () => {
                                         <p className="font-light italic">
                                             {activity.remarks === 'Collector Suspended' ? 
                                             <button className="rounded-lg bg-red-500 w-full text-white p-3 font-medium" disabled>{activity.remarks}</button>
+                                            : activity.remarks === 'Completed' ? 
+                                            <button className="rounded-lg bg-green-500 w-full text-white p-3 font-medium" disabled>{activity.remarks}</button>
                                             : activity.remarks === 'Collector Contacted' ? 
                                             <button className="rounded-lg bg-[#016A70] w-full text-white p-3 font-medium" disabled>{activity.remarks}</button>
                                             : activity.remarks === 'Pending' ? 
