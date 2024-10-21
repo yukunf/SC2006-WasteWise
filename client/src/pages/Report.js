@@ -144,8 +144,8 @@ const Report = () => {
                     </div>
                     <div className="flex justify-center mt-5 space-x-2">
                         <Link to='/listreport'>
-                            <button className="bg-[#5ba6dc] text-white font-bold py-2 px-4 rounded mt-2 shadow-xl" onClick={() => alert('Close Case')}>
-                                Close Case
+                            <button className="bg-[#5ba6dc] text-white font-bold py-2 px-4 rounded mt-2 shadow-xl" >
+                                Return to List
                             </button>
                         </Link>
                         <Link to={`/remove/${id}`}>

@@ -77,7 +77,8 @@ const ListReport = () => {
                             <th className="p-4 text-black font-bold text-base text-center border-b border-r border-gray-300">Date Created</th>
                             <th className="p-4 text-black font-bold text-base text-center border-b border-r border-gray-300">Created by User</th>
                             <th className="p-4 text-black font-bold text-base text-center border-b border-r border-gray-300">Reported Collector</th>
-                            <th className="p-4 text-black font-bold text-base text-center">Actions</th>
+                            <th className="p-4 text-black font-bold text-base text-center border-b border-r border-gray-300">Actions</th>
+                            <th className="p-4 text-black font-bold text-base text-center border-b border-gray-300">Status</th> {/* New Status Column */}
                         </tr>
                     </thead>
                     <tbody>
@@ -93,16 +94,28 @@ const ListReport = () => {
                                     <td className="p-4 text-black font-bold border-b border-r border-gray-300">
                                         {report.collector_name || 'N/A'}
                                     </td>
-                                    <td className="p-4 text-center">
+                                    <td className="p-4 text-center border-b border-r border-gray-300"> {/* Add borders */}
                                         <Link to={`/report/${report.id}`}>
                                             <button className="bg-white text-blue-500 px-4 py-2 rounded">View Report</button>
                                         </Link>
+                                    </td>
+                                    <td className="p-4 text-center border-b border-gray-300"> {/* Add borders */}
+                                        {/* Display Status */}
+                                        {report.completed ? (
+                                            <span className="rounded-lg bg-green-500 w-full text-white p-2 font-medium">
+                                                Completed
+                                            </span>
+                                        ) : (
+                                            <span className="rounded-lg bg-gray-500 w-full text-white p-2 font-medium">
+                                                Pending
+                                            </span>
+                                        )}
                                     </td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="4" className="text-center p-4 text-black font-bold">
+                                <td colSpan="5" className="text-center p-4 text-black font-bold">
                                     No reports found
                                 </td>
                             </tr>
