@@ -55,8 +55,6 @@ const CollectorProfilePage = () => {
                     <div className="text-sm border-2 rounded-md w-full p-1.5 mt-1 pl-3">{c.address}</div>
                     <h5 className="text-base font-semibold mt-3">Contact Number</h5>
                     <div className="text-sm border-2 rounded-md w-full p-1.5 mt-1 pl-3">{c.phone != "" ? c.phone: c.fax}</div>
-                    <h5 className="text-base font-semibold mt-3">Opening Hours</h5>
-                    <div className="text-sm border-2 rounded-md w-[550px] p-1.5 mt-1 pl-3">Collector opening hours</div>
                     <h5 className="text-base font-semibold mt-3">License Grade</h5>
                     <div className="text-sm border-2 rounded-md w-[550px] p-1.5 mt-1">
                         <div className="flex justify-between gap-4">
