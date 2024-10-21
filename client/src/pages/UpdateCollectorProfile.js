@@ -74,11 +74,6 @@ const UpdateCollectorProfile = () => {
                         Address
                     </h5>
                     <input type="address" className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your address"/>
-                    <h5 className="text-base font-semibold mt-4"> 
-                        Contact Number 
-                    </h5> 
-                    <input type="contact" className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your contact number"/> 
-
                     <div className="text-base font-semibold mt-4 flex justify-between gap-4 w-full">
                         <h5 className="w-full">
                             Address Latitude
@@ -91,6 +86,10 @@ const UpdateCollectorProfile = () => {
                         <input type="address latitude" className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your address latitude"/>
                         <input type="address longitude" className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your address longitude"/>
                     </div>
+                    <h5 className="text-base font-semibold mt-4"> 
+                        Contact Number 
+                    </h5> 
+                    <input type="contact" className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your contact number"/> 
                     <h5 className="text-base font-semibold mt-4">
                         License Grade
                     </h5>
