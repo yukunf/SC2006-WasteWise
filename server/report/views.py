@@ -46,6 +46,16 @@ def mark_report_contacted(request, pk):
         return Response({'message': 'Report marked as contacted'}, status=status.HTTP_200_OK)
     except Report.DoesNotExist:
         return Response({'error': 'Report not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['PATCH'])
+def mark_report_completed(request, pk):
+    try:
+        report = Report.objects.get(pk=pk)
+        report.completed = True  # Update the contacted status
+        report.save()
+        return Response({'message': 'Report marked as completed'}, status=status.HTTP_200_OK)
+    except Report.DoesNotExist:
+        return Response({'error': 'Report not found'}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['GET'])
 def list_reports(request):

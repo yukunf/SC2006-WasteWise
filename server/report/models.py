@@ -15,6 +15,7 @@ class Report(models.Model):
     comments = models.TextField()  # User's comments about the report
     created_at = models.DateTimeField(auto_now_add=True)  # Automatically set to now when the report is created
     contacted = models.BooleanField(default=False)
+    completed = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Report on {self.collector_name} by {self.user_name}'
