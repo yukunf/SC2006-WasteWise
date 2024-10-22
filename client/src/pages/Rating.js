@@ -9,7 +9,7 @@ const Rating = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [collectorId, setCollectorId] = useState(""); // Store the collector ID
-
+    const [fullName, setFullName] = useState(null);
     
     const handleStarClick = (index) => {
         setRating(index);
@@ -18,7 +18,33 @@ const Rating = () => {
     const handleSelectChange = (event) => {
         setCollectorId(event.target.value);
     };
+    useEffect(() => {
+        const fetchUserDetails = async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/api/users/${localStorage.getItem('user_id')}/`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Token ${localStorage.getItem('token')}`, // Include the token for authentication
+                        'Content-Type': 'application/json',
+                    },
+                });
 
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('User details:', data);
+                    setFullName(`${data.first_name} ${data.last_name}`);
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.error); // Display error message if retrieval fails
+                    console.error('Retrieval error:', errorData);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        fetchUserDetails();
+    }, []);
     // Fetch company names and IDs from API
     useEffect(() => {
         const fetchCompanies = async () => {
@@ -65,6 +91,7 @@ const Rating = () => {
             rating: rating,
             comments: comments,
             userID: localStorage.getItem('user_id'),
+            userName: fullName,
             created_at: new Date().toISOString()
         };
     

@@ -7,6 +7,7 @@ class Ratings(models.Model):
     rating = models.IntegerField()
     comments = models.TextField()
     userID = models.IntegerField()
+    userName = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 const loginPage = require("../images/loginPage.png")
 const wastewiseLogoVer2 = require("../images/wastewiseLogoVer2.png")
 
+
 const Login = () => {
 
     const [formData, setFormData] = useState({
@@ -20,7 +21,7 @@ const Login = () => {
             [name]: value, // Update state based on input name
         });
     };
-
+    const [fullName, setFullName] = useState(null);
     // Handle form submission
     const handleLogin = async (e) => {
         e.preventDefault(); // Prevent the page from refreshing
@@ -48,8 +49,9 @@ const Login = () => {
                 localStorage.setItem('collector_id', data.collector_id);
                 localStorage.setItem('role', data.role);
                 localStorage.setItem('userEmail', data.email);
-                localStorage.setItem('userName', data.first_name);
-                console.log(data);
+                setFullName(`${data.first_name} ${data.last_name}`);
+                localStorage.setItem('userName', fullName);
+                console.log('userName: ', fullName);
 
                 // Redirect to respective home page after successful login
                 if (localStorage.getItem('role') == 'general') {
