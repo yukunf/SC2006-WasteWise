@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from "../components/Footer";
 
@@ -11,26 +11,96 @@ const UpdateCollectorMainProfile = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
 
-    const handleUpdate = () => {
-        // Assume this is where you make your update API call
-        const hasError = false; // Simulate an error for this example
+    const [formData, setFormData] = useState({
+        first_name: '',
+        last_name: '',
+        email: '',
+        old_password: '',
+        new_password: '',
+    });
 
-        if (hasError) {
-            setError(true); // Show error message
-    
-            // Delay navigation to allow the message to display
-            setTimeout(() => {
-                setError(false); // Hide message after 10 seconds
-                navigate("/CollectorMainProfile"); // Navigate after the message shows
-            }, 1000); // 10 seconds delay for the error message
-        } else {
-            // No error, proceed to profile update logic
-            // Call API for successful update
-            setSuccessMessage('Profile updated successfully!'); // Show success message
-            setTimeout(() => setSuccessMessage(''), 1000); // Hide message after 3 seconds
+    useEffect(() => {
+        const fetchUserDetails = async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/api/users/${localStorage.getItem('user_id')}/`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Token ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
 
-            // Optionally navigate to profile page after a delay
-            setTimeout(() => navigate("/CollectorMainProfile"), 1000);
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('User details:', data);
+                    setFormData({
+                        first_name: data.first_name,
+                        last_name: data.last_name,
+                        email: data.email,
+                        old_password: '', 
+                        new_password: '', // Reset new_password field
+                    });
+                } else {
+                    const errorData = await response.json();
+                    setError(errorData.error);
+                    console.error('Retrieval error:', errorData);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        fetchUserDetails();
+    }, []);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const handleUpdate = async (e) => {
+        e.preventDefault(); // Prevent default form submission
+
+        const { first_name, last_name, email, old_password, new_password } = formData;
+
+        // Validate required fields
+        if (!first_name || !last_name || !email || !old_password || !new_password) {
+            setError('Please fill in all required fields.');
+            return;
+        }
+
+        try {
+            // Proceed to update the profile
+            const response = await fetch(`http://localhost:8000/api/users/${localStorage.getItem('user_id')}/update/`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Token ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    first_name,
+                    last_name,
+                    email,
+                    ...(new_password && { password: new_password }), // include new_password only if provided
+                }),
+            });
+
+            if (response.ok) {
+                setSuccessMessage(true); 
+                setTimeout(() => {
+                    setSuccessMessage(false);
+                    navigate("/CollectorMainProfile");
+                }, 3000);
+            } else {
+                const errorData = await response.json();
+                setError(errorData.error);
+                console.error('Update error:', errorData);
+            }
+        } catch (error) {
+            console.error('Error:', error);
         }
     };
 
@@ -59,6 +129,7 @@ const UpdateCollectorMainProfile = () => {
                     <img src={profilePageIcon} className="w-[220px] mr-3" alt="Profile Icon" />
                 </div>
                 <div className="absolute top-10 left-20">
+                    <form onSubmit={handleUpdate}>
                     <h1 className="text-4xl font-bold text-[#016A70]">
                         Account Settings
                     </h1>
@@ -71,21 +142,49 @@ const UpdateCollectorMainProfile = () => {
                         </h5>
                     </div>
                     <div className="flex justify-between gap-4">
-                        <input type="first name" className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your first name"/>
-                        <input type="last name" className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your last name"/>
+                        <input
+                                type="text"
+                                name="first_name" 
+                                value={formData.first_name} 
+                                onChange={handleChange} 
+                                className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400"
+                            />                       
+                         <input  
+                                type="text"
+                                name="last_name" 
+                                value={formData.last_name} 
+                                onChange={handleChange}
+                                className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400"
+                            />
                     </div>
                     <h5 className="text-base font-semibold mt-3">
                         Email
                     </h5>
-                    <input type="email" className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your email address"/>
+                    <input 
+                            type="email" 
+                            name="email" 
+                            value={formData.email} 
+                            onChange={handleChange}
+                            className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400"
+                            />
                     <h5 className="text-base font-semibold mt-3">
                         Old Password
                     </h5>
-                    <input type="password" className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your old password"/>
+                    <input  type="password" 
+                            name="old_password" 
+                            value={formData.old_password} 
+                            onChange={handleChange}
+                            className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your old password"
+                            />
                     <h5 className="text-base font-semibold mt-3">
                         New Password
                     </h5>
-                    <input type="password" className="text-sm border-2 rounded-md w-[550px] p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your new password"/>
+                    <input  type="password" 
+                            name="new_password" 
+                            value={formData.new_password} 
+                            onChange={handleChange}
+                            className="text-sm border-2 rounded-md w-[550px] p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your new password"
+                            />
                     <h5  className="text-sm text-[#016A70] mt-5 cursor-pointer hover:underline">
                         Delete Your Account
                     </h5>
@@ -102,6 +201,7 @@ const UpdateCollectorMainProfile = () => {
                             Update Profile
                         </button>
                     </div>
+                    </form>
                 </div>
             </div>
 
