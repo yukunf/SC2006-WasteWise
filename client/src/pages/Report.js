@@ -12,6 +12,7 @@ const Report = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [contacted, setContacted] = useState(false);  // State for contacted button
     const [suspended, setSuspended] = useState(false);
+    const [completed, setCompleted] = useState(false);
 
     // Fetch the report details, including the contacted status
     useEffect(() => {
@@ -42,6 +43,25 @@ const Report = () => {
 
     console.log("hi", report)
 
+    const markAsCompleted = async () => {
+        try {
+            const response = await fetch(`http://localhost:8000/api/reports/${id}/complete/`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.ok) {
+                setCompleted(true);  // Update local state to disable the button
+            } else {
+                alert('Failed to mark as completed');
+            }
+        } catch (error) {
+            alert('Network error. Please try again later.');
+        }
+    };
     // Function to mark the report as contacted
     const markAsContacted = async () => {
         try {
@@ -146,6 +166,11 @@ const Report = () => {
                         <Link to='/listreport'>
                             <button className="bg-[#5ba6dc] text-white font-bold py-2 px-4 rounded mt-2 shadow-xl" >
                                 Return to List
+                            </button>
+                        </Link>
+                        <Link to='/listreport'>
+                            <button className="bg-[green] text-white font-bold py-2 px-4 rounded mt-2 shadow-xl" onClick={markAsCompleted} >
+                                Close Case
                             </button>
                         </Link>
                         <Link to={`/remove/${id}`}>
