@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from "../components/Footer";
@@ -9,14 +8,15 @@ const profilePageIcon = require("../images/profilePageIcon.png")
 const UpdateCollectorMainProfile = () => {
     const [error, setError] = useState(false); // To track error status
     const [successMessage, setSuccessMessage] = useState('');
+    const [deleteMessage, setDeleteMessage] = useState('');
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
         email: '',
-        old_password: '',
         new_password: '',
+        confirm_password: '',
     });
 
     useEffect(() => {
@@ -64,10 +64,15 @@ const UpdateCollectorMainProfile = () => {
     const handleUpdate = async (e) => {
         e.preventDefault(); // Prevent default form submission
 
-        const { first_name, last_name, email, old_password, new_password } = formData;
+        if (formData.new_password !== formData.confirm_password) {
+            setError("Passwords do not match");
+            return;
+        }
+
+        const { first_name, last_name, email, new_password, confirm_password } = formData;
 
         // Validate required fields
-        if (!first_name || !last_name || !email || !old_password || !new_password) {
+        if (!first_name || !last_name || !email || !new_password || !confirm_password) {
             setError('Please fill in all required fields.');
             return;
         }
@@ -104,6 +109,41 @@ const UpdateCollectorMainProfile = () => {
         }
     };
 
+    const handleDelete = async (e) => {
+        e.preventDefault(); // Prevent default form submission
+
+        try {
+            // Proceed to update the profile
+            const response = await fetch(`http://localhost:8000/api/users/${localStorage.getItem('user_id')}/delete/`, {
+                method: 'delete',
+                headers: {
+                    'Authorization': `Token ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                setDeleteMessage(true); 
+                localStorage.removeItem('token');
+                localStorage.removeItem('user_id');
+                localStorage.removeItem('email');
+                localStorage.removeItem('collector_id');
+                localStorage.removeItem('role');
+
+                console.log("u better be", deleteMessage);
+                setTimeout(() => {
+                    navigate("/");  // Navigate to home page after 3 seconds
+                }, 3000);
+            } else {
+                const errorData = await response.json();
+                setError(errorData.error);
+                console.error('Update error:', errorData);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
     return (
         <div className="w-full h-full">
             <div className="relative h-[35vh] flex flex-col lg:flex-row bg-[#016a70]" style={{ paddingLeft: "10%", paddingRight: "10%", paddingTop: "50px" }}>
@@ -119,6 +159,11 @@ const UpdateCollectorMainProfile = () => {
             {successMessage && (
                 <div className="fixed top-2 left-1/2 transform -translate-x-1/2 bg-green-500 text-white p-2 rounded mb-4 text-center z-20 w-full max-w-lg">
                     Successfully updated.
+                </div>
+            )}
+            {deleteMessage && (
+                <div className="fixed top-2 left-1/2 transform -translate-x-1/2 bg-green-500 text-white p-2 rounded mb-4 text-center z-20 w-full max-w-lg">
+                    Successfully deleted.
                 </div>
             )}
             <div className="h-[70vh] w-full bg-white">
@@ -168,28 +213,26 @@ const UpdateCollectorMainProfile = () => {
                             className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400"
                             />
                     <h5 className="text-base font-semibold mt-3">
-                        Old Password
-                    </h5>
-                    <input  type="password" 
-                            name="old_password" 
-                            value={formData.old_password} 
-                            onChange={handleChange}
-                            className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your old password"
-                            />
-                    <h5 className="text-base font-semibold mt-3">
                         New Password
                     </h5>
                     <input  type="password" 
                             name="new_password" 
                             value={formData.new_password} 
                             onChange={handleChange}
+                            className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your old password"
+                            />
+                    <h5 className="text-base font-semibold mt-3">
+                        Confirm Password
+                    </h5>
+                    <input  type="password" 
+                            name="confirm_password" 
+                            value={formData.confirm_password} 
+                            onChange={handleChange}
                             className="text-sm border-2 rounded-md w-[550px] p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your new password"
                             />
-                    <h5  className="text-sm text-[#016A70] mt-5 cursor-pointer hover:underline">
+                    <h5  className="text-sm text-[#016A70] mt-5 cursor-pointer hover:underline"
+                    onClick={handleDelete}>
                         Delete Your Account
-                    </h5>
-                    <h5 className="text-sm">
-                        You will recieve an email to confirm your decision.
                     </h5>
                     <h5 className="text-sm">
                         Please note that all boards you have created will be permanently erased.

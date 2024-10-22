@@ -99,15 +99,6 @@ const Login = () => {
                             value={formData.password}
                             onChange={handleChange}
                             className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-500" placeholder="       Enter your password"/>
-                    <div className="mt-4 flex items-center justify-between">
-                        <div className="flex items-center">
-                            <input type="checkbox" id="remember-me" className="h-4 w-4 border-2 border-gray-200 text-blue-600 rounded focus:ring-blue-500"/>
-                            <label htmlFor="remember-me" className="-mt-0.5 ml-2 text-gray-700 text-sm">Remember me</label>
-                        </div>
-                        <div className="-mt-0.5 text-sm text-blue-600 cursor-pointer hover:underline">
-                            Forgot password?
-                        </div>
-                    </div>
                     <div className="flex justify-center mt-5">
                         <button type="submit" className="bg-[#016A70] hover:bg-teal-800 text-white py-2 px-16 rounded text-base font-semibold">
                             Log in

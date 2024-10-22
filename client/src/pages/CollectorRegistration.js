@@ -125,7 +125,7 @@ const CollectorRegistration = () => {
 
     return (
         <div className="flex flex-col h-screen overflow-hidden">
-            <h1 className="text-4xl font-poppins font-semibold pt-150 pl-1106" style={{paddingLeft:"50%",paddingRight:"14%",paddingTop:"41px", paddingBottom:"18px"}}>
+            <h1 className="text-4xl font-poppins font-semibold text-center justify-center" style={{paddingLeft:"49%",paddingTop:"41px", paddingBottom:"18px"}}>
                 Collector Registration
             </h1>
             <div className="flex justify-end font-poppins text-left">
