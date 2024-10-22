@@ -52,10 +52,9 @@ const Report = () => {
                     'Content-Type': 'application/json',
                 }
             });
-    
+
             if (response.ok) {
-                setCompleted(true);  // Update local state to reflect the change
-                alert('All reports for this collector have been marked as completed.');
+                setCompleted(true);  // Update local state to disable the button
             } else {
                 alert('Failed to mark as completed');
             }
@@ -63,7 +62,7 @@ const Report = () => {
             alert('Network error. Please try again later.');
         }
     };
-    
+    // Function to mark the report as contacted
     const markAsContacted = async () => {
         try {
             const response = await fetch(`http://localhost:8000/api/reports/${id}/contact/`, {
@@ -73,10 +72,10 @@ const Report = () => {
                     'Content-Type': 'application/json',
                 }
             });
-    
+
             if (response.ok) {
-                setContacted(true);  // Update local state to reflect the change
-                alert('All reports for this collector have been marked as contacted.');
+                setContacted(true);  // Update local state to disable the button
+                alert('Collector has been contacted');
             } else {
                 alert('Failed to mark as contacted');
             }
@@ -84,7 +83,6 @@ const Report = () => {
             alert('Network error. Please try again later.');
         }
     };
-    
 
     useEffect(() => {
         const fetchCompanies = async () => {

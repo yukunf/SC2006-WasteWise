@@ -22,6 +22,8 @@ const Display = () => {
         setIsAuthenticated(!!token);
     }, []);
 
+    
+
     // Fetch the specific collector data
     useEffect(() => {
         const fetchCollector = async () => {
@@ -156,7 +158,7 @@ const Display = () => {
                                                             <span key={i} className="text-gray-300 text-2xl">★</span>
                                                         ))}
                                                     </div>
-                                                    <strong>User {rating.userID} ({new Date(rating.created_at).toLocaleDateString()}):</strong>
+                                                    <strong> {rating.userName} ({new Date(rating.created_at).toLocaleDateString()}):</strong>
                                                     <p>{rating.comments}</p>
                                                 </div>
                                             ))
