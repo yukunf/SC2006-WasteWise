@@ -25,6 +25,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         role = validated_data.pop('role')
         collector_id = validated_data.pop('collector_id', None)
 
+        user_test = User.objects.get(email=validated_data['email'])
         user = User.objects.create_user(
             username=validated_data['email'],  # Set username=email
             email=validated_data['email'],

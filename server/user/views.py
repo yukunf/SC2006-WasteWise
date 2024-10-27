@@ -20,10 +20,16 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'], url_path='register')
     def register(self, request):
         serializer = RegisterSerializer(data=request.data)
+        user_test = User.objects.filter(email=request.data['email']).first()
+        if user_test:
+            print(Response({'error': 'This Email is already taken.'}, status=status.HTTP_400_BAD_REQUEST))
+            return Response({'error': 'This Email is already taken.'}, status=status.HTTP_400_BAD_REQUEST)
         if serializer.is_valid():
+            print(f"The data retrieved is{request.data['role']}")
+            print(f"The data retrieved is{request.data['email']}")
             userCreated = serializer.save()  #
             print(request.data)
-            print(f"The data retrieved is{request.data['role']}")
+
 
             profile, created = UserProfile.objects.get_or_create(user=userCreated)
             profile.role = request.data['role']
