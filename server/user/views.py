@@ -33,7 +33,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
             profile, created = UserProfile.objects.get_or_create(user=userCreated)
             profile.role = request.data['role']
-            profile.collector_id = request.data['collector_id']
+            profile.collector_id = None if request.data['collector_id'] is '' else request.data['collector_id']
             profile.save()
             print(f"table {profile.role} is created??{created}")
             return Response({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
