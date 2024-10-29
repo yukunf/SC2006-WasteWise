@@ -1,7 +1,13 @@
 
-# WasteWise
+# WasteWise♻️
 
-> Short Briefing
+Welcome to the repository for NTU SC2006 Software Engineering group project WasteWise.
+
+WasteWise is an innovative platform designed to connect the public with licensed waste collectors by offering easy access to essential information on waste disposal services. The project aims to facilitate environmental awareness, promote responsible waste management, and support regulatory bodies in monitoring industry compliance.
+
+This project applies software engineering best practices, prioritizing security, user experience, and performance to ensure a sustainable and reliable platform for future enhancements.
+
+----
 
 This is a web application built with Django (backend) and React (frontend). This README will guide you through setting up the development environment, installing dependencies, and running both the backend and frontend servers.
 
