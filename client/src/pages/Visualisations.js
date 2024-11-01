@@ -41,7 +41,9 @@ const Visualisations = () => {
                 if (response.ok) {
                     const data = await response.json();
                     console.log('Collector details:', data);
-                    setCollectors(data)
+                    const collectorDetails = data.filter(record => record.suspended === false)
+                    console.log('Collector details (without suspended):', collectorDetails);
+                    setCollectors(collectorDetails)
                 } else {
                     const errorData = await response.json();
                     setError(errorData.error); // Display error message if retrieval fails

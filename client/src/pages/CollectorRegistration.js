@@ -87,6 +87,21 @@ const CollectorRegistration = () => {
             return;
         }
 
+        if (!formData.email) {
+            alert("Your email cannot be empty!!");
+            return;
+        }
+
+        if (!formData.first_name || !formData.last_name) {
+            alert("Your first name and/or last name cannot be empty!!");
+            return;
+        }
+
+        if (!formData.collector_company || !formData.collector_id) {
+            alert("You must choose a collector!");
+            return;
+        }
+
         
         const selectedCompany = companies.find(company => company.name === formData.collector_company);
         console.log("s", selectedCompany, "id:", selectedCompany.id)
@@ -110,7 +125,12 @@ const CollectorRegistration = () => {
                 navigate('/login'); // Redirect to login on successful registration
             } else {
                 const errorData = await response.json();
-                alert(errorData.error); // Display error message if email already exists
+                if (errorData.error) {
+                    alert(errorData.error); // Display error message if email already exists
+                }
+                else {
+                    alert("Please enter all the fields!!"); // Display error message if missing fields
+                }
                 console.error('Registration error:', errorData);
             }
         } catch (error) {
