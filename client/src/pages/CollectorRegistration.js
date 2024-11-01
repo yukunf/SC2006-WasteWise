@@ -97,6 +97,11 @@ const CollectorRegistration = () => {
             return;
         }
 
+        if (!formData.password || !formData.confirmPassword) {
+            alert("Your password cannot be empty!!");
+            return;
+        }
+
         if (!formData.collector_company || !formData.collector_id) {
             alert("You must choose a collector!");
             return;
@@ -125,12 +130,7 @@ const CollectorRegistration = () => {
                 navigate('/login'); // Redirect to login on successful registration
             } else {
                 const errorData = await response.json();
-                if (errorData.error) {
-                    alert(errorData.error); // Display error message if email already exists
-                }
-                else {
-                    alert("Please enter all the fields!!"); // Display error message if missing fields
-                }
+                alert(errorData.error); // Display error message if email already exists
                 console.error('Registration error:', errorData);
             }
         } catch (error) {
