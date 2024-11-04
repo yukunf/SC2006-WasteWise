@@ -219,7 +219,7 @@ const UpdateCollectorMainProfile = () => {
                             name="new_password" 
                             value={formData.new_password} 
                             onChange={handleChange}
-                            className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your old password"
+                            className="text-sm border-2 rounded-md w-full p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your new password"
                             />
                     <h5 className="text-base font-semibold mt-3">
                         Confirm Password
@@ -228,7 +228,7 @@ const UpdateCollectorMainProfile = () => {
                             name="confirm_password" 
                             value={formData.confirm_password} 
                             onChange={handleChange}
-                            className="text-sm border-2 rounded-md w-[550px] p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Enter your new password"
+                            className="text-sm border-2 rounded-md w-[550px] p-1.5 mt-1 focus:outline-none focus:border-blue-400" placeholder="       Confirm your new password"
                             />
                     <h5  className="text-sm text-[#016A70] mt-5 cursor-pointer hover:underline"
                     onClick={handleDelete}>
